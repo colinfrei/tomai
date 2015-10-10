@@ -2,6 +2,7 @@
 # Set parameters here that may be different on each deployment target of the app, e.g. development, staging, production.
 # http://symfony.com/doc/current/best_practices/configuration.html#infrastructure-related-configuration
 parameters:
+    database_driver: pdo_sqlite
     database_host:     127.0.0.1
     database_port:     ~
     database_name:     symfony
@@ -16,7 +17,7 @@ parameters:
     mailer_password:   ~
 
     # A secret key that's used to generate certain security-related tokens
-    secret:            ThisTokenIsNotSoSecretChangeIt
+    secret:            "q39grae7bhodlak4tq3liaeghap4ht3480t7gp9hü340gipnl34uoe5zvtp3489tghbüe0abjäabirlbo4qugrsffaerfef"
 
     google_oauth_client_id: abc123
     google_oauth_client_secret: def456
