@@ -170,7 +170,7 @@ class DefaultController extends Controller
                 'uploadType' => 'media'
             ));
         } catch (\Google_Service_Exception $e) {
-            dump($e);
+            $this->getLogger()->error($e);
             exit;
         }
     }
@@ -305,7 +305,6 @@ class DefaultController extends Controller
             $headers[$header['name']] = $header['value'];
         }
 
-        dump($messagePayload);
         if ($messagePayload->getBody()->size > 0) {
             $bodyData = base64_decode($messagePayload->getBody()->data);
         } else {
