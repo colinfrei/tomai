@@ -17,3 +17,7 @@ parameters:
 
     # A secret key that's used to generate certain security-related tokens
     secret:            ThisTokenIsNotSoSecretChangeIt
+
+    google_oauth_client_id: abc123
+    google_oauth_client_secret: def456
+    google_developer_key: ghi789
