@@ -397,8 +397,8 @@ class DefaultController extends Controller
     }
 
     private function listHistory(\Google_Service_Gmail $service, $userId, $startHistoryId) {
-        //TODO: labelid
-        $opt_param = array('startHistoryId' => $startHistoryId, 'labelId' => 'Label_43');
+        //TODO: include filter by labelid?
+        $opt_param = array('startHistoryId' => $startHistoryId);
         $pageToken = NULL;
         $histories = array();
 
