@@ -208,11 +208,10 @@ class DefaultController extends Controller
 
     /**
      * @Route("/google-push", name="google-push")
-     * @Method("POST")
+     * @Method({"POST"})
      */
     public function googlePushAction(Request $request)
     {
-
         $messageData = json_decode($request->getContent());
         $message = json_decode(base64_decode($messageData->message->data), true);
         $user = $this->getEntityManager()->getRepository('AppBundle:User')->findOneBy(array('email' => $message['emailAddress']));
