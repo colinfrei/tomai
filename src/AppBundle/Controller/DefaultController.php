@@ -81,6 +81,7 @@ class DefaultController extends Controller
 
         $viewCopies = [];
 
+        /** @var Copy $copy */
         foreach ($this->getUser()->getCopies() AS $copy) {
             $labelNames = [];
             foreach ($copy->getLabels() as $labelId) {
@@ -89,7 +90,8 @@ class DefaultController extends Controller
             $viewCopies[] = array(
                 'id' => $copy->getId(),
                 'name' => $copy->getName(),
-                'labelNames' => $labelNames
+                'labelNames' => $labelNames,
+                'googleGroupUrl' => $copy->getGroupUrl()
             );
         }
 
@@ -142,7 +144,7 @@ class DefaultController extends Controller
         $groupResponse = $directoryClient->groups->insert($group);
 
         $copy->setGroupEmail($groupResponse->getEmail());
-        $copy->setGroupUrl('https://groups.google.com/a/' . $this->getParameter('google_apps_domain') . 'forum/#!forum/' . $groupId);
+        $copy->setGroupUrl('https://groups.google.com/a/' . $this->getParameter('google_apps_domain') . '/forum/#!forum/' . $groupId);
         // Copy is saved after. not nice.
     }
 
