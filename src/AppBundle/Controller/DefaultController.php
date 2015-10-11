@@ -206,6 +206,22 @@ class DefaultController extends Controller
         ));
     }
 
+    /**
+     * @Route("/google-push", name="google-push")
+     * @Method("POST")
+     */
+    public function googlePushAction(Request $request)
+    {
+
+        $messageData = json_decode($request->getContent());
+        $message = json_decode(base64_decode($messageData->message->data), true);
+        $user = $this->getEntityManager()->getRepository('AppBundle:User')->findOneBy(array('email' => $message['emailAddress']));
+        $this->getLogger()->debug('Processing Google Pubsub Message', $message);
+
+        $this->processHistory($user, $message['historyId']);
+
+    }
+
     private function processHistory(User $user, $historyId)
     {
         $gmail = new \Google_Service_Gmail($this->getGoogleClient()->getGoogleClient());
