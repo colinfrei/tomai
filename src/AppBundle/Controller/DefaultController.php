@@ -220,6 +220,7 @@ class DefaultController extends Controller
 
         $this->processHistory($user, $message['historyId']);
 
+        return new Response('', 204);
     }
 
     private function processHistory(User $user, $historyId)
