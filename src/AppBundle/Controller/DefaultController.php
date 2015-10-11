@@ -134,12 +134,15 @@ class DefaultController extends Controller
     {
         $directoryClient = new \Google_Service_Directory($this->getGoogleClient()->getGoogleClient());
 
+        $userEmail = $copy->getUser()->getEmail();
         $group = new \Google_Service_Directory_Group();
-        $group->setEmail(uniqid('email-copier-') . '@liip.ch'); //TODO: make domain configurable
-        $group->setDescription('Email-Copier-generated group'); //TODO: add name of person that generated it
+        $groupId = uniqid('tomai-');
+        $group->setEmail($groupId . '@' . $this->getParameter('google_apps_domain'));
+        $group->setDescription('Tomai-generated group by ' . $userEmail);
         $groupResponse = $directoryClient->groups->insert($group);
 
         $copy->setGroupEmail($groupResponse->getEmail());
+        $copy->setGroupUrl('https://groups.google.com/a/' . $this->getParameter('google_apps_domain') . 'forum/#!forum/' . $groupId);
         // Copy is saved after. not nice.
     }
 
@@ -235,6 +238,7 @@ class DefaultController extends Controller
         $gmail = new \Google_Service_Gmail($this->getGoogleClient($user)->getGoogleClient());
 
         $history = $this->listHistory($gmail, $user->getEmail(), $historyId);
+        $this->getLogger()->debug(print_r($history, true));
         /** @var \Google_Service_Gmail_History $historyPart */
         foreach ($history as $historyPart) {
             foreach ($user->getCopies() as $copy) { //TODO: move this outside foreach loop and use all the users labels for history filter
@@ -261,7 +265,8 @@ class DefaultController extends Controller
         $watchRequest = new \Google_Service_Gmail_WatchRequest();
         $watchRequest->setTopicName($topicName);
 
-        $watchRequest->setLabelIds($copy->getLabels());
+        // Let's just handle the filtering on our side, makes it a bit easier
+        //$watchRequest->setLabelIds($copy->getLabels());
         $gmail->users->watch($this->getUser()->getGoogleId(), $watchRequest);
     }
 

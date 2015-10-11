@@ -45,6 +45,11 @@ class Copy
     protected $group_email;
 
     /**
+     * @ORM\Column(name="group_url", type="string", length=255)
+     */
+    protected $group_url;
+
+    /**
      * @return mixed
      */
     public function getId()
@@ -133,5 +138,19 @@ class Copy
         $this->group_email = $group_email;
     }
 
+    /**
+     * @return string
+     */
+    public function getGroupUrl()
+    {
+        return $this->group_url;
+    }
 
+    /**
+     * @param string $group_url
+     */
+    public function setGroupUrl($group_url)
+    {
+        $this->group_url = $group_url;
+    }
 }
