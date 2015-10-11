@@ -240,9 +240,10 @@ class DefaultController extends Controller
         $gmail = new \Google_Service_Gmail($this->getGoogleClient($user)->getGoogleClient());
 
         $history = $this->listHistory($gmail, $user->getEmail(), $historyId);
-        $this->getLogger()->debug(print_r($history, true));
         /** @var \Google_Service_Gmail_History $historyPart */
         foreach ($history as $historyPart) {
+            $this->getLogger()->debug('Processing history part', array('content' => print_r($historyPart, true)));
+
             foreach ($user->getCopies() as $copy) { //TODO: move this outside foreach loop and use all the users labels for history filter
                 /** @var \Google_Service_Gmail_HistoryLabelAdded $historyMessage */
                 foreach ($historyPart->getLabelsAdded() as $historyMessage) {
