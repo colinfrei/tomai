@@ -17,13 +17,18 @@ class DefaultController extends Controller
     private $googleClient;
     private $groupsMigrationClient;
 
-    private function getGoogleClient()
+    private function getGoogleClient(User $user = null)
     {
         if (!isset($this->googleClient)) {
             $this->googleClient = $this->get('happyr.google.api.client');
+
+            if (!$user) {
+                $user = $this->getUser();
+            }
+
             $token = array(
-                'access_token' => $this->getUser()->getGoogleAccessToken(),
-                'refresh_token' => $this->getUser()->getGoogleRefreshToken()
+                'access_token' => $user->getGoogleAccessToken(),
+                'refresh_token' => $user->getGoogleRefreshToken()
             );
 
             $this->googleClient->setAccessToken(json_encode($token));
@@ -227,7 +232,7 @@ class DefaultController extends Controller
 
     private function processHistory(User $user, $historyId)
     {
-        $gmail = new \Google_Service_Gmail($this->getGoogleClient()->getGoogleClient());
+        $gmail = new \Google_Service_Gmail($this->getGoogleClient($user)->getGoogleClient());
 
         $history = $this->listHistory($gmail, $user->getEmail(), $historyId);
         /** @var \Google_Service_Gmail_History $historyPart */
