@@ -88,22 +88,6 @@ class DefaultController extends Controller
 
         asort($formLabels);
 
-        $viewCopies = [];
-
-        /** @var Copy $copy */
-        foreach ($this->getUser()->getCopies() AS $copy) {
-            $labelNames = [];
-            foreach ($copy->getLabels() as $labelId) {
-                $labelNames[] = $formLabels[$labelId];
-            }
-            $viewCopies[] = array(
-                'id' => $copy->getId(),
-                'name' => $copy->getName(),
-                'labelNames' => $labelNames,
-                'googleGroupUrl' => $copy->getGroupUrl()
-            );
-        }
-
         $copy = new Copy();
         $form = $this->createFormBuilder($copy)
             ->add('name', 'text', array(
@@ -134,6 +118,22 @@ class DefaultController extends Controller
             // - trigger initial import
             // - make sure regular imports happen
             //return $this->redirectToRoute('setup_success');
+        }
+
+        $viewCopies = [];
+
+        /** @var Copy $copy */
+        foreach ($this->getUser()->getCopies() AS $copy) {
+            $labelNames = [];
+            foreach ($copy->getLabels() as $labelId) {
+                $labelNames[] = $formLabels[$labelId];
+            }
+            $viewCopies[] = array(
+                'id' => $copy->getId(),
+                'name' => $copy->getName(),
+                'labelNames' => $labelNames,
+                'googleGroupUrl' => $copy->getGroupUrl()
+            );
         }
 
         // replace this example code with whatever you need
