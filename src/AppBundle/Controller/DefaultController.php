@@ -278,30 +278,58 @@ class DefaultController extends Controller
             foreach ($user->getCopies() as $copy) { //TODO: move this outside foreach loop and use all the users labels for history filter
                 /** @var \Google_Service_Gmail_HistoryLabelAdded $historyMessage */
                 foreach ($historyPart->getLabelsAdded() as $historyMessage) {
-                    if (count(array_intersect($copy->getLabels(), $historyMessage->getLabelIds())) > 0) {
-                        $actualMessage = $gmail->users_messages->get(
-                            $user->getEmail(),
-                            $historyMessage->getMessage()->getId()
+                    if (!$this->shouldMessageBeHandled($copy, $historyMessage->getLabelIds())) {
+                        $this->getLogger()->debug(
+                            'Skipped message for copy because it didn\'t match any relevant labels',
+                            array(
+                                'copy id' => $copy->getId(),
+                                'message id' => $historyMessage->getMessage()->id,
+                                'message label ids' => $historyMessage->getLabelIds(),
+                                'copy label ids' => $copy->getLabels()
+                            )
                         );
 
-                        $this->handleMessage($actualMessage, $copy);
+                        continue;
                     }
+
+                    $actualMessage = $gmail->users_messages->get(
+                        $user->getEmail(),
+                        $historyMessage->getMessage()->getId()
+                    );
+
+                    $this->handleMessage($actualMessage, $copy);
                 }
 
                 /** @var \Google_Service_Gmail_HistoryMessageAdded $historyMessage */
                 foreach ($historyPart->getMessagesAdded() as $historyMessage) {
-                    //TODO: deduplicate
-                    if (count(array_intersect($copy->getLabels(), $historyMessage->getMessage()->labels)) > 0) {
-                        $actualMessage = $gmail->users_messages->get(
-                            $user->getEmail(),
-                            $historyMessage->getMessage()->getId()
+                    if (!$this->shouldMessageBeHandled($copy, $historyMessage->getMessage()->labels)) {
+                        $this->getLogger()->debug(
+                            'Skipped message for copy because it didn\'t match any relevant labels',
+                            array(
+                                'copy id' => $copy->getId(),
+                                'message id' => $historyMessage->getMessage()->id,
+                                'message label ids' => $historyMessage->getLabelIds(),
+                                'copy label ids' => $copy->getLabels()
+                            )
                         );
 
-                        $this->handleMessage($actualMessage, $copy);
+                        continue;
                     }
+
+                    $actualMessage = $gmail->users_messages->get(
+                        $user->getEmail(),
+                        $historyMessage->getMessage()->getId()
+                    );
+
+                    $this->handleMessage($actualMessage, $copy);
                 }
             }
         }
+    }
+
+    private function shouldMessageBeHandled(Copy $copy, array $messageLabelIds)
+    {
+        return count(array_intersect($copy->getLabels(), $messageLabelIds)) > 0;
     }
 
     private function addGmailWatch(Copy $copy)
