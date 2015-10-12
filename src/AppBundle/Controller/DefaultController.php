@@ -315,61 +315,6 @@ class DefaultController extends Controller
         }
     }
 
-    /**
-     * @Route("/setup-pubsub", name="setup_pubsub")
-     */
-    public function setupPubSubAction(Request $request)
-    {
-        $pubsub = new \Google_Service_Pubsub($this->getGoogleClient()->getGoogleClient());
-
-        //TODO: only do this once
-        try {
-            $topic = new \Google_Service_Pubsub_Topic();
-            $topicName = 'projects/email-copier/topics/test1';
-            dump($pubsub->projects_topics->create($topicName, $topic));
-            dump($topic);
-        } catch (\Google_Service_Exception $e) {
-            if ($e->getCode() == '409') {
-                $this->get('logger')->debug(
-                    'Received 409 when attempting to add topic (already exists)',
-                    array('name' => $topicName)
-                );
-                // don't do anything
-            }
-        }
-
-        try {
-            $subscription = new \Google_Service_Pubsub_Subscription();
-            $subscription->setName('email-copier');
-            $subscription->setTopic($topicName);
-            dump($pubsub->projects_subscriptions->create('projects/1234/subscriptions/email-copier', $subscription)); //TODO: id should come from config
-            dump($subscription);
-        } catch (\Google_Service_Exception $e) {
-            if ($e->getCode() == '409') {
-                $this->get('logger')->debug(
-                    'Received 409 when attempting to add topic (already exists)',
-                    array('name' => $topicName)
-                );
-                // don't do anything
-            }
-        }
-
-        // give access
-        $setIamPolicyRequest = new \Google_Service_Pubsub_SetIamPolicyRequest();
-        $iamPolicy = new \Google_Service_Pubsub_Policy();
-        $iamPolicy->setBindings(array(
-            'role' => "roles/pubsub.publisher",
-            'members' => array("serviceAccount:gmail-api-push@system.gserviceaccount.com")
-        ));
-        $setIamPolicyRequest->setPolicy($iamPolicy);
-        $pubsub->projects_subscriptions->setIamPolicy($subscription, $setIamPolicyRequest);
-
-        // replace this example code with whatever you need
-        return $this->render('default/index.html.twig', array(
-            'base_dir' => realpath($this->container->getParameter('kernel.root_dir') . '/..'),
-        ));
-    }
-
     private function buildRfc822Message(\Google_Service_Gmail_Message $message)
     {
         $messagePayload = $message->getPayload();
