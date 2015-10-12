@@ -302,13 +302,13 @@ class DefaultController extends Controller
 
                 /** @var \Google_Service_Gmail_HistoryMessageAdded $historyMessage */
                 foreach ($historyPart->getMessagesAdded() as $historyMessage) {
-                    if (!$this->shouldMessageBeHandled($copy, $historyMessage->getMessage()->labels)) {
+                    if (!$this->shouldMessageBeHandled($copy, $historyMessage->getMessage()->labelIds)) {
                         $this->getLogger()->debug(
                             'Skipped message for copy because it didn\'t match any relevant labels',
                             array(
                                 'copy id' => $copy->getId(),
                                 'message id' => $historyMessage->getMessage()->id,
-                                'message label ids' => $historyMessage->getLabelIds(),
+                                'message label ids' => $historyMessage->labelIds,
                                 'copy label ids' => $copy->getLabels()
                             )
                         );
