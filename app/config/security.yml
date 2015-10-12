@@ -28,14 +28,18 @@ security:
             form_login:
                 provider: fos_userbundle
                 csrf_provider: security.csrf.token_manager # Use form.csrf_provider instead for Symfony <2.4
+                always_use_default_target_path: true
+                default_target_path: /manage
 
             logout:       true
             anonymous:    true
             oauth:
                 resource_owners:
                     google:             "/login/check-google"
-                login_path:        /login
-                failure_path:      /login
+                login_path:        /login/google
+                failure_path:      /login/google
+                always_use_default_target_path: true
+                default_target_path: /manage
 
                 oauth_user_provider:
                     #this is my custom user provider, created from FOSUBUserProvider - will manage the
