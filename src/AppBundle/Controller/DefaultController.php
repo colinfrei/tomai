@@ -60,9 +60,18 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/setup", name="setup")
+     * @Route("/", name="index")
+     * @Method({"GET"})
      */
-    public function setupAction(Request $request)
+    public function indexAction()
+    {
+        return $this->render('default/index.html.twig');
+    }
+
+    /**
+     * @Route("/manage", name="manage-copyjobs")
+     */
+    public function manageCopyjobsAction(Request $request)
     {
         $gmail = new \Google_Service_Gmail($this->getGoogleClient()->getGoogleClient());
 
@@ -126,7 +135,7 @@ class DefaultController extends Controller
         }
 
         // replace this example code with whatever you need
-        return $this->render('default/setup.html.twig', array(
+        return $this->render('default/manage.html.twig', array(
             'copies' => $viewCopies,
             'form' => $form->createView()
         ));
