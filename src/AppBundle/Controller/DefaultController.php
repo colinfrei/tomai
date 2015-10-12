@@ -151,6 +151,7 @@ class DefaultController extends Controller
         $group = new \Google_Service_Directory_Group();
         $groupId = uniqid('tomai-');
         $group->setEmail($groupId . '@' . $this->getParameter('google_apps_domain'));
+        $group->setName($copy->getName());
         $group->setDescription('Tomai-generated group by ' . $userEmail);
         $groupResponse = $directoryClient->groups->insert($group);
 
@@ -159,6 +160,7 @@ class DefaultController extends Controller
         // Copy is saved after. not nice.
     }
 
+    //TODO: make this a POST
     /**
      * @Route("/deletecopy/{id}", name="delete-copy")
      */
@@ -178,10 +180,7 @@ class DefaultController extends Controller
         $this->getEntityManager()->remove($copy);
         $this->getEntityManager()->flush();
 
-        // replace this example code with whatever you need
-        return $this->render('default/index.html.twig', array(
-            'base_dir' => realpath($this->container->getParameter('kernel.root_dir') . '/..'),
-        ));
+        $this->redirectToRoute('manage');
     }
 
     private function handleMessage(\Google_Service_Gmail_Message $message, Copy $copy)
