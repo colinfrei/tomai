@@ -207,7 +207,11 @@ class DefaultController extends Controller
             $user = $this->getEntityManager()->getRepository('AppBundle:User')->findOneBy(array('email' => $message['emailAddress']));
             $this->getLogger()->debug('Processing Google Pubsub Message', $message);
 
-            $this->processHistory($user, $message['historyId']);
+            $this->processHistory($user, $user->getGmailHistoryId());
+            $user->setGmailHistoryId($message['historyId']);
+
+            $this->getEntityManager()->persist($user);
+            $this->getEntityManager()->flush();
 
             $ackRequest = new \Google_Service_Pubsub_AcknowledgeRequest();
             $ackRequest->setAckIds($receivedMessage->getAckId());
@@ -227,10 +231,17 @@ class DefaultController extends Controller
     {
         $messageData = json_decode($request->getContent());
         $message = json_decode(base64_decode($messageData->message->data), true);
+        /** @var User $user */
         $user = $this->getEntityManager()->getRepository('AppBundle:User')->findOneBy(array('email' => $message['emailAddress']));
+
+
         $this->getLogger()->debug('Processing Google Pubsub Message', $message);
 
-        $this->processHistory($user, $message['historyId']);
+        $this->processHistory($user, $user->getGmailHistoryId());
+        $user->setGmailHistoryId($message['historyId']);
+
+        $this->getEntityManager()->persist($user);
+        $this->getEntityManager()->flush();
 
         return new Response('', 204);
     }
@@ -283,7 +294,14 @@ class DefaultController extends Controller
 
         // Let's just handle the filtering on our side, makes it a bit easier
         //$watchRequest->setLabelIds($copy->getLabels());
-        $gmail->users->watch($this->getUser()->getGoogleId(), $watchRequest);
+        $watchResponse = $gmail->users->watch($this->getUser()->getGoogleId(), $watchRequest);
+
+        $copyUser = $copy->getUser();
+        if (!$copyUser->getGmailHistoryId()) {
+            $copyUser->setGmailHistoryId($watchResponse->getHistoryId());
+            $this->getEntityManager()->persist($copyUser);
+            $this->getEntityManager()->flush();
+        }
     }
 
     /**

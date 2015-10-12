@@ -46,6 +46,11 @@ class User extends BaseUser
     protected $google_token_expiry;
 
     /**
+     * @ORM\Column(name="gmail_history_id", type="string", length=20, nullable=true)
+     */
+    protected $gmail_history_id;
+
+    /**
      * @ORM\OneToMany(targetEntity="Copy", mappedBy="user")
      */
     protected $copies;
@@ -136,6 +141,22 @@ class User extends BaseUser
     public function setGoogleTokenExpiry($google_token_expiry)
     {
         $this->google_token_expiry = $google_token_expiry;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getGmailHistoryId()
+    {
+        return $this->gmail_history_id;
+    }
+
+    /**
+     * @param mixed $gmail_history_id
+     */
+    public function setGmailHistoryId($gmail_history_id)
+    {
+        $this->gmail_history_id = $gmail_history_id;
     }
 
     /**

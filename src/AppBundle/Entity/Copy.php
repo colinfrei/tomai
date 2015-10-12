@@ -58,7 +58,7 @@ class Copy
     }
 
     /**
-     * @return mixed
+     * @return User
      */
     public function getUser()
     {
