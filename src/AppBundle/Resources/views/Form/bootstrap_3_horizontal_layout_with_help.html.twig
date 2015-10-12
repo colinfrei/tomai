@@ -1,0 +1,7 @@
+{% use "bootstrap_3_horizontal_layout.html.twig" %}
+
+
+{% block form_widget_simple -%}
+    {{- parent() -}}
+    <span style="help-block">{{ help|raw }}</span>
+{%- endblock form_widget_simple %}

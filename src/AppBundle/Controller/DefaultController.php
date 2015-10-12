@@ -106,7 +106,9 @@ class DefaultController extends Controller
 
         $copy = new Copy();
         $form = $this->createFormBuilder($copy)
-            ->add('name', 'text')
+            ->add('name', 'text', array(
+                'help' => 'This will be also be the name (not the email address) of the Google Group.<br />Use something that makes sense out of context, like "Colin\'s Client A emails"'
+            ))
             ->add('labels', 'choice', array(
                 'choices' => $formLabels,
                 'required' => true,

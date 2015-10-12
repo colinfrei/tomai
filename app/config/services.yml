@@ -10,3 +10,7 @@ services:
     my_user_provider:
         class: AppBundle\FOSUBUserProvider
         arguments: [@fos_user.user_manager,{google: google_id}]
+    form_help:
+        class: AppBundle\FormHelp
+        tags:
+            - {name: "form.type_extension", alias: "form" }
