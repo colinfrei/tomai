@@ -18,7 +18,7 @@
                     <tr>
                         <td>{{ copy.name }}</td>
                         <td>{{ copy.labelNames|join(', ') }}</td>
-                        <td>edit | <a href="{{ path('delete-copy', {'id': copy.id}) }}">delete</a> | <a href="{{ googleGroupUrl }}">view Google group</a></td>
+                        <td>edit | <a href="{{ path('delete-copy', {'id': copy.id}) }}">delete</a> | <a href="{{ copy.googleGroupUrl }}">view Google group</a></td>
                     </tr>
                 {% endfor %}
             </table>
