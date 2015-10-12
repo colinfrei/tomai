@@ -158,6 +158,16 @@ class DefaultController extends Controller
         $copy->setGroupEmail($groupResponse->getEmail());
         $copy->setGroupUrl('https://groups.google.com/a/' . $this->getParameter('google_apps_domain') . '/forum/#!forum/' . $groupId);
         // Copy is saved after. not nice.
+
+        // set settings
+        $groupSettingsClient = new \Google_Service_Groupssettings($this->getGoogleClient()->getGoogleClient());
+        $groupSettings = new \Google_Service_Groupssettings_Groups();
+        $groupSettings->setWhoCanPostMessage("ALL_MANAGERS_CAN_POST");
+        $groupSettings->setWhoCanViewGroup("ALL_IN_DOMAIN_CAN_VIEW");
+        $groupSettings->setIncludeInGlobalAddressList("false");
+        $groupSettings->setAllowWebPosting("false");
+        $groupSettings->setShowInGroupDirectory("true");
+        $groupSettingsClient->groups->patch($groupResponse->getEmail(), $groupSettings);
     }
 
     //TODO: make this a POST
