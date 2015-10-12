@@ -271,7 +271,7 @@ class DefaultController extends Controller
                 /** @var \Google_Service_Gmail_HistoryMessageAdded $historyMessage */
                 foreach ($historyPart->getMessagesAdded() as $historyMessage) {
                     //TODO: deduplicate
-                    if (count(array_intersect($copy->getLabels(), $historyMessage->getMessage()->getLabels())) > 0) {
+                    if (count(array_intersect($copy->getLabels(), $historyMessage->getMessage()->labels)) > 0) {
                         $actualMessage = $gmail->users_messages->get(
                             $user->getEmail(),
                             $historyMessage->getMessage()->getId()
