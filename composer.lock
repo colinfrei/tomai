@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "dc070ab88ccbc4e22ec1c8a6c14266c8",
+    "hash": "47c4b65d787e4b0f9433b4bd6804b7ed",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -880,17 +880,17 @@
         },
         {
             "name": "happyr/google-api-bundle",
-            "version": "dev-master",
+            "version": "dev-add-logger",
             "target-dir": "HappyR/Google/ApiBundle",
             "source": {
                 "type": "git",
-                "url": "https://github.com/jon-gonzalez/GoogleApiBundle.git",
-                "reference": "7cdb38287d2f5f69e9d8476e1e3b5082256cdacd"
+                "url": "https://github.com/colinfrei/GoogleApiBundle.git",
+                "reference": "38ada58b8acd01d1805363a1fc11ec8082ecc8d4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jon-gonzalez/GoogleApiBundle/zipball/7cdb38287d2f5f69e9d8476e1e3b5082256cdacd",
-                "reference": "7cdb38287d2f5f69e9d8476e1e3b5082256cdacd",
+                "url": "https://api.github.com/repos/colinfrei/GoogleApiBundle/zipball/38ada58b8acd01d1805363a1fc11ec8082ecc8d4",
+                "reference": "38ada58b8acd01d1805363a1fc11ec8082ecc8d4",
                 "shasum": ""
             },
             "require": {
@@ -928,9 +928,9 @@
                 "Google API"
             ],
             "support": {
-                "source": "https://github.com/jon-gonzalez/GoogleApiBundle/tree/dev"
+                "source": "https://github.com/colinfrei/GoogleApiBundle/tree/add-logger"
             },
-            "time": "2015-02-02 16:24:45"
+            "time": "2015-10-12 01:20:44"
         },
         {
             "name": "hwi/oauth-bundle",
