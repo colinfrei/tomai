@@ -885,12 +885,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/colinfrei/GoogleApiBundle.git",
-                "reference": "38ada58b8acd01d1805363a1fc11ec8082ecc8d4"
+                "reference": "9c4e0086506f83a8cb9375309a8cbbb89ccbf34e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/colinfrei/GoogleApiBundle/zipball/38ada58b8acd01d1805363a1fc11ec8082ecc8d4",
-                "reference": "38ada58b8acd01d1805363a1fc11ec8082ecc8d4",
+                "url": "https://api.github.com/repos/colinfrei/GoogleApiBundle/zipball/9c4e0086506f83a8cb9375309a8cbbb89ccbf34e",
+                "reference": "9c4e0086506f83a8cb9375309a8cbbb89ccbf34e",
                 "shasum": ""
             },
             "require": {
@@ -930,7 +930,7 @@
             "support": {
                 "source": "https://github.com/colinfrei/GoogleApiBundle/tree/add-logger"
             },
-            "time": "2015-10-12 01:20:44"
+            "time": "2015-10-12 09:07:14"
         },
         {
             "name": "hwi/oauth-bundle",
