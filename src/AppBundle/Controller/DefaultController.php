@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Router;
@@ -99,10 +100,20 @@ class DefaultController extends Controller
                 'multiple' => true,
                 'attr' => array('class' => 'chosen')
             ))
+            ->add('ignored_labels', 'choice', array(
+                'choices' => $formLabels,
+                'required' => true,
+                'multiple' => true,
+                'attr' => array('class' => 'chosen')
+            ))
             ->add('save', 'submit')
             ->getForm();
 
         $form->handleRequest($request);
+
+        if (count(array_intersect($copy->getLabels(), $copy->getIgnoredLabels())) > 0) {
+            $form->addError(new FormError('You can\'t have the same labels in the labels and ignored labels fields'));
+        }
 
         if ($form->isValid()) {
             $copy->setUser($this->getUser());
@@ -249,6 +260,7 @@ class DefaultController extends Controller
      */
     public function googlePushAction(Request $request)
     {
+        //TODO: add delay somehow
         $messageData = json_decode($request->getContent());
         $message = json_decode(base64_decode($messageData->message->data), true);
         /** @var User $user */
@@ -278,14 +290,16 @@ class DefaultController extends Controller
             foreach ($user->getCopies() as $copy) { //TODO: move this outside foreach loop and use all the users labels for history filter
                 /** @var \Google_Service_Gmail_HistoryLabelAdded $historyMessage */
                 foreach ($historyPart->getLabelsAdded() as $historyMessage) {
+
                     if (!$this->shouldMessageBeHandled($copy, $historyMessage->getLabelIds())) {
                         $this->getLogger()->debug(
-                            'Skipped message for copy because it didn\'t match any relevant labels',
+                            'Skipped message for copy because it didn\'t match any relevant labels or had an ignored label',
                             array(
                                 'copy id' => $copy->getId(),
                                 'message id' => $historyMessage->getMessage()->id,
                                 'message label ids' => $historyMessage->getLabelIds(),
-                                'copy label ids' => $copy->getLabels()
+                                'copy label ids' => $copy->getLabels(),
+                                'copy ignored label ids' => $copy->getIgnoredLabels()
                             )
                         );
 
@@ -304,12 +318,13 @@ class DefaultController extends Controller
                 foreach ($historyPart->getMessagesAdded() as $historyMessage) {
                     if (!$this->shouldMessageBeHandled($copy, $historyMessage->getMessage()->labelIds)) {
                         $this->getLogger()->debug(
-                            'Skipped message for copy because it didn\'t match any relevant labels',
+                            'Skipped message for copy because it didn\'t match any relevant labels or had an ignored label',
                             array(
                                 'copy id' => $copy->getId(),
                                 'message id' => $historyMessage->getMessage()->id,
                                 'message label ids' => $historyMessage->labelIds,
-                                'copy label ids' => $copy->getLabels()
+                                'copy label ids' => $copy->getLabels(),
+                                'copy ignored label ids' => $copy->getIgnoredLabels()
                             )
                         );
 
@@ -329,7 +344,19 @@ class DefaultController extends Controller
 
     private function shouldMessageBeHandled(Copy $copy, array $messageLabelIds)
     {
-        return count(array_intersect($copy->getLabels(), $messageLabelIds)) > 0;
+        $matchCount = count(array_intersect($copy->getLabels(), $messageLabelIds));
+
+        if ($matchCount < 1) {
+            return false;
+        }
+
+        $ignoredMatchCount = count(array_intersect($copy->getIgnoredLabels(), $messageLabelIds));
+
+        if ($ignoredMatchCount < 1) {
+            return true;
+        }
+
+        return false;
     }
 
     private function addGmailWatch(Copy $copy)

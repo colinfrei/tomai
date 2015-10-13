@@ -29,9 +29,10 @@
         <div class="panel panel-info">
             <div class="panel-heading">Make more email transparent!</div>
             <div class="panel-body">
-            {{ form_start(form) }}
-            {{ form_widget(form) }}
-            {{ form_end(form) }}
+                <p>Set up a job that'll copy emails from your Gmail account to a Google Group.</p>
+                {{ form_start(form) }}
+                {{ form_widget(form) }}
+                {{ form_end(form) }}
             </div>
         </div>
     </div>
@@ -42,7 +43,21 @@
 <script type="text/javascript" src="{{ asset('assets/vendor/chosen/chosen.jquery.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/vendor/bootstrap/dist/js/bootstrap.min.js') }}"></script>
 <script type="text/javascript">
-    $('.chosen').chosen({'search_contains': true});
+    $('.chosen').chosen({'search_contains': true}).change(function(event, changes) {
+        var other_field = 'form_labels';
+        if ($(event.target).attr('id') == 'form_labels') {
+            other_field = 'form_ignored_labels';
+        }
+
+        if (changes.selected) {
+            $('#' + other_field + ' option[value="' + changes.selected +'"]').attr('disabled', 'disabled');
+        }
+        if (changes.unselected) {
+            $('#' + other_field + ' option[value="' + changes.unselected +'"]').removeAttr('disabled');
+        }
+        $('#' + other_field).trigger('chosen:updated');
+    });
+
 </script>
 {% endblock %}
 

@@ -37,7 +37,12 @@ class Copy
     /**
      * @ORM\Column(name="labels", type="array")
      */
-    protected $labels;
+    protected $labels = array();
+
+    /**
+     * @ORM\Column(name="ignored_labels", type="array")
+     */
+    protected $ignored_labels = array();
 
     /**
      * @ORM\Column(name="group_email", type="string", length=255)
@@ -120,6 +125,22 @@ class Copy
     public function setLabels($labels)
     {
         $this->labels = $labels;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIgnoredLabels()
+    {
+        return $this->ignored_labels;
+    }
+
+    /**
+     * @param mixed $ignored_labels
+     */
+    public function setIgnoredLabels($ignored_labels)
+    {
+        $this->ignored_labels = $ignored_labels;
     }
 
     /**
