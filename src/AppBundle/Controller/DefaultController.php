@@ -2,7 +2,7 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\Copy;
+use AppBundle\Entity\EmailCopyJob;
 use AppBundle\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -88,7 +88,7 @@ class DefaultController extends Controller
 
         asort($formLabels);
 
-        $copy = new Copy();
+        $copy = new EmailCopyJob();
         $form = $this->createFormBuilder($copy)
             ->add('name', 'text', array(
                 'help' => 'This will be also be the name (not the email address) of the Google Group.<br />Use something that makes sense out of context, like "Colin\'s Client A emails"'
@@ -132,7 +132,7 @@ class DefaultController extends Controller
 
         $viewCopies = [];
 
-        /** @var Copy $copy */
+        /** @var EmailCopyJob $copy */
         foreach ($this->getUser()->getCopies() AS $copy) {
             $labelNames = [];
             foreach ($copy->getLabels() as $labelId) {
@@ -153,7 +153,7 @@ class DefaultController extends Controller
         ));
     }
 
-    private function addGoogleGroup(Copy $copy)
+    private function addGoogleGroup(EmailCopyJob $copy)
     {
         $directoryClient = new \Google_Service_Directory($this->getGoogleClient()->getGoogleClient());
 
@@ -186,8 +186,8 @@ class DefaultController extends Controller
      */
     public function deleteCopyAction(Request $request, $id)
     {
-        /** @var Copy $copy */
-        $copy = $this->getEntityManager()->getRepository('AppBundle:Copy')->find($id);
+        /** @var EmailCopyJob $copy */
+        $copy = $this->getEntityManager()->getRepository('AppBundle:EmailCopyJob')->find($id);
 
         if ($copy->getUser() != $this->getUser()) {
             exit('Invalid User');
@@ -203,7 +203,7 @@ class DefaultController extends Controller
         $this->redirectToRoute('manage');
     }
 
-    private function handleMessage(\Google_Service_Gmail_Message $message, Copy $copy)
+    private function handleMessage(\Google_Service_Gmail_Message $message, EmailCopyJob $copy)
     {
         $rfc822Message = $this->buildRfc822Message($message);
         try {
@@ -341,7 +341,7 @@ class DefaultController extends Controller
         }
     }
 
-    private function shouldMessageBeHandled(Copy $copy, array $messageLabelIds)
+    private function shouldMessageBeHandled(EmailCopyJob $copy, array $messageLabelIds)
     {
         $matchCount = count(array_intersect($copy->getLabels(), $messageLabelIds));
 
@@ -358,7 +358,7 @@ class DefaultController extends Controller
         return false;
     }
 
-    private function addGmailWatch(Copy $copy)
+    private function addGmailWatch(EmailCopyJob $copy)
     {
         $topicName = 'projects/email-copier/topics/test1'; //TODO: make this come from config
 

@@ -51,7 +51,7 @@ class User extends BaseUser
     protected $gmail_history_id;
 
     /**
-     * @ORM\OneToMany(targetEntity="Copy", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="EmailCopyJob", mappedBy="user")
      */
     protected $copies;
 
@@ -160,7 +160,7 @@ class User extends BaseUser
     }
 
     /**
-     * @return Copy[]
+     * @return EmailCopyJob[]
      */
     public function getCopies()
     {

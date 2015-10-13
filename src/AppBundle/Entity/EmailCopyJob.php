@@ -7,9 +7,9 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="copy")
+ * @ORM\Table(name="copyemailjob")
  */
-class Copy
+class EmailCopyJob
 {
     /**
      * @ORM\Id
