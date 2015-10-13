@@ -32,7 +32,7 @@ security:
                 default_target_path: /manage
 
             logout:       true
-            anonymous:    true
+            anonymous: true
             oauth:
                 resource_owners:
                     google:             "/login/check-google"
@@ -42,21 +42,16 @@ security:
                 default_target_path: /manage
 
                 oauth_user_provider:
-                    #this is my custom user provider, created from FOSUBUserProvider - will manage the
-                    #automatic user registration on your site, with data from the provider (facebook. google, etc.)
+                    # this brilliantly named service actually has this name
                     service: my_user_provider
-        login:
-            pattern:  ^/login$
-            security: false
-
-            remember_me:
-                key: "%secret%"
-                lifetime: 31536000 # 365 days in seconds
-                path: /
-                domain: ~ # Defaults to the current domain from $_SERVER
 
     access_control:
-        - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/login/google, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/login/check-google, role: IS_AUTHENTICATED_ANONYMOUSLY } # not sure if this is necessary
+        - { path: ^/, role: ROLE_USER }
+
+        # don't think these are needed/used
         - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/admin/, role: ROLE_ADMIN }
