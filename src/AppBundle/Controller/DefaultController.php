@@ -205,7 +205,8 @@ class DefaultController extends Controller
 
     private function handleMessage(\Google_Service_Gmail_Message $message, EmailCopyJob $copy)
     {
-        $rfc822Message = $this->buildRfc822Message($message);
+        $rfc822Message = $this->base64url_decode($message->getRaw());
+
         try {
             $this->getGroupsMigrationClient()->archive->insert($copy->getGroupEmail(), array(
                 'data' => $rfc822Message,
@@ -307,7 +308,8 @@ class DefaultController extends Controller
 
                     $actualMessage = $gmail->users_messages->get(
                         $user->getEmail(),
-                        $historyMessage->getMessage()->getId()
+                        $historyMessage->getMessage()->getId(),
+                        array('format' => 'raw')
                     );
 
                     $this->handleMessage($actualMessage, $copy);
@@ -332,7 +334,8 @@ class DefaultController extends Controller
 
                     $actualMessage = $gmail->users_messages->get(
                         $user->getEmail(),
-                        $historyMessage->getMessage()->getId()
+                        $historyMessage->getMessage()->getId(),
+                        array('format' => 'raw')
                     );
 
                     $this->handleMessage($actualMessage, $copy);
@@ -378,74 +381,6 @@ class DefaultController extends Controller
         }
     }
 
-    private function buildRfc822Message(\Google_Service_Gmail_Message $message)
-    {
-        $messagePayload = $message->getPayload();
-
-        $headers = array();
-        foreach ($messagePayload->getHeaders() as $header) {
-            $headers[$header['name']] = $header['value'];
-        }
-
-        if ($messagePayload->getBody()->size > 0) {
-            $bodyData = base64_decode($messagePayload->getBody()->data);
-        } else {
-            foreach ($messagePayload->getParts() as $part) {
-                if ($part->getMimeType() != 'text/plain') {
-                    continue;
-                }
-
-                foreach ($part->getHeaders() as $header) {
-                    $headers[$header['name']] = $header['value'];
-                }
-
-                $bodyData = base64_decode($part->getBody()->data);
-            }
-        }
-
-        $output = '';
-        $setContentTransferEncodingHeader = false;
-        foreach ($headers as $header => $value) {
-            switch (strtolower($header)) {
-                case 'content-transfer-encoding':
-                    $this->get('logger')->debug('Replaced content-transfer-encoding header', array('original' => $value));
-                    $value = 'quoted-printable';
-                    $setContentTransferEncodingHeader = true;
-                    break;
-
-                case 'content-type':
-                    $contentTypeParts = explode(';', $value);
-                    foreach ($contentTypeParts as $key => $contentTypePart) {
-                        $contentTypePart = trim($contentTypePart);
-
-                        $searchString = 'charset=';
-                        if (strtolower(substr($contentTypePart, 0, strlen($searchString))) == $searchString) {
-                            $contentTypeParts[$key] = 'charset="UTF-8"';
-                        }
-                    }
-                    $newValue = implode('; ', $contentTypeParts);
-
-                    $this->get('logger')->debug(
-                        'Replaced content-type header',
-                        array('original' => $value, 'replaced with' => $newValue)
-                    );
-                    $value = $newValue;
-
-                    break;
-            }
-
-            $output .= $header . ': ' . $value . "\r\n";
-        }
-
-        if (!$setContentTransferEncodingHeader) {
-            $headers['Content-Transfer-Encoding'] = 'quoted-printable';
-        }
-
-        $output .= "\r\n" . quoted_printable_encode($bodyData);
-
-        return $output;
-    }
-
     private function listHistory(\Google_Service_Gmail $service, $userId, $startHistoryId) {
         //TODO: include filter by labelid?
         $opt_param = array('startHistoryId' => $startHistoryId);
@@ -469,5 +404,12 @@ class DefaultController extends Controller
 
 
         return $histories;
+    }
+
+    private function base64url_decode($base64url)
+    {
+        $base64 = strtr($base64url, '-_', '+/');
+        $plainText = base64_decode($base64);
+        return ($plainText);
     }
 }
