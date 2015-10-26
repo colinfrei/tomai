@@ -200,7 +200,7 @@ class DefaultController extends Controller
         $this->getEntityManager()->remove($copy);
         $this->getEntityManager()->flush();
 
-        $this->redirectToRoute('manage');
+        $this->redirectToRoute('manage-copyjobs');
     }
 
     private function handleMessage(\Google_Service_Gmail_Message $message, EmailCopyJob $copy)
