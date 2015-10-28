@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="my_user_provider" class="AppBundle\FOSUBUserProvider">
+            <argument type="service" id="fos_user.user_manager" />
+            <argument type="collection">
+                <argument key="google">google_id</argument>
+            </argument>
+        </service>
+
+        <service id="form_help" class="AppBundle\FormHelp">
+            <tag name="form.type_extension" alias="form" />
+        </service>
+
+        <service id="controller.service" class="AppBundle\Controller\ServiceController">
+            <argument type="service" id="doctrine.orm.default_entity_manager" />
+            <argument type="service" id="logger" />
+            <argument type="service" id="happyr.google.api.client" />
+        </service>
+    </services>
+</container>
