@@ -24,7 +24,7 @@ class QueueMessage
     protected $google_email;
 
     /**
-     * @ORM\Column(type="integer", name="timestamp")
+     * @ORM\Column(type="bigint", name="timestamp")
      */
     protected $timestamp;
 
