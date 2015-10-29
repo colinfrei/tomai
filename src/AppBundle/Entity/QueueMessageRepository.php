@@ -19,11 +19,10 @@ class QueueMessageRepository extends \Doctrine\ORM\EntityRepository
 
     public function insertOnDuplicateKeyUpdate(QueueMessage $message)
     {
-        $database = get_class($this->getEntityManager()->getConnection()->getDatabasePlatform());
+        $database = $this->getEntityManager()->getConnection()->getDatabasePlatform()->getName();
 
-        switch ($this->getEntityManager()->getConnection()->getDatabasePlatform()) {
-            case 'Doctrine\\DBAL\\Platforms\\SqlitePlatform':
-            case 'Doctrine\DBAL\Platforms\SqlitePlatform':
+        switch ($database) {
+            case 'sqlite':
                 $query = $this->getEntityManager()->getConnection()->prepare("
                     INSERT OR REPLACE INTO queue_message
                       (`message_id`, `google_email`, `timestamp`)
@@ -32,11 +31,7 @@ class QueueMessageRepository extends \Doctrine\ORM\EntityRepository
                     ");
             break;
 
-            case 'Doctrine\\DBAL\\Platforms\\MySqlPlatform':
-            case 'Doctrine\\\\DBAL\\\\Platforms\\\\MySqlPlatform':
-            case 'Doctrine\\DBAL\\Platforms\\MySql57Platform':
-            case 'Doctrine\DBAL\Platforms\MySqlPlatform':
-            case 'Doctrine\DBAL\Platforms\MySql57Platform':
+            case 'mysql':
                 $query = $this->getEntityManager()->getConnection()->prepare("
                     REPLACE INTO queue_message
                       (`message_id`, `google_email`, `timestamp`)
