@@ -33,6 +33,7 @@ class QueueMessageRepository extends \Doctrine\ORM\EntityRepository
             break;
 
             case 'Doctrine\\DBAL\\Platforms\\MySqlPlatform':
+            case 'Doctrine\\\\DBAL\\\\Platforms\\\\MySqlPlatform':
             case 'Doctrine\\DBAL\\Platforms\\MySql57Platform':
             case 'Doctrine\DBAL\Platforms\MySqlPlatform':
             case 'Doctrine\DBAL\Platforms\MySql57Platform':
