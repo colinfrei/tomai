@@ -23,6 +23,7 @@ class QueueMessageRepository extends \Doctrine\ORM\EntityRepository
 
         switch ($this->getEntityManager()->getConnection()->getDatabasePlatform()) {
             case 'Doctrine\\DBAL\\Platforms\\SqlitePlatform':
+            case 'Doctrine\DBAL\Platforms\SqlitePlatform':
                 $query = $this->getEntityManager()->getConnection()->prepare("
                     INSERT OR REPLACE INTO queue_message
                       (`message_id`, `google_email`, `timestamp`)
@@ -33,6 +34,8 @@ class QueueMessageRepository extends \Doctrine\ORM\EntityRepository
 
             case 'Doctrine\\DBAL\\Platforms\\MySqlPlatform':
             case 'Doctrine\\DBAL\\Platforms\\MySql57Platform':
+            case 'Doctrine\DBAL\Platforms\MySqlPlatform':
+            case 'Doctrine\DBAL\Platforms\MySql57Platform':
                 $query = $this->getEntityManager()->getConnection()->prepare("
                     REPLACE INTO queue_message
                       (`message_id`, `google_email`, `timestamp`)
@@ -42,7 +45,7 @@ class QueueMessageRepository extends \Doctrine\ORM\EntityRepository
             break;
 
             default:
-                throw new \LogicException('Invalid Database platform: ' . $this->getEntityManager()->getConnection()->getDatabasePlatform());
+                throw new \LogicException('Invalid Database platform: ' . $database);
         }
 
         $query->execute();
