@@ -40,10 +40,7 @@ class QueueMessageRepository extends \Doctrine\ORM\EntityRepository
             break;
 
             default:
-                throw new \LogicException(
-                    'Invalid Database platform',
-                    array('platform' => $this->getEntityManager()->getConnection()->getDatabasePlatform())
-                );
+                throw new \LogicException('Invalid Database platform: ' . $this->getEntityManager()->getConnection()->getDatabasePlatform());
         }
 
         $query->execute();
