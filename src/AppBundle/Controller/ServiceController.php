@@ -198,6 +198,8 @@ class ServiceController
         }
 
         $this->entityManager->flush();
+
+        return new Response('Successfully processed output');
     }
 
 
@@ -213,13 +215,11 @@ class ServiceController
 
             foreach ($historyPart->getLabelsAdded() as $historyMessage) {
                 $queueMessage = new QueueMessage($historyMessage->getMessage()->id, $user->getEmail());
-                dump($queueMessage);
                 $this->entityManager->getRepository('AppBundle:QueueMessage')->insertOnDuplicateKeyUpdate($queueMessage);
             }
 
             foreach ($historyPart->getMessagesAdded() as $historyMessage) {
                 $queueMessage = new QueueMessage($historyMessage->getMessage()->getId(), $user->getEmail());
-                dump($queueMessage);
 
                 $this->entityManager->getRepository('AppBundle:QueueMessage')->insertOnDuplicateKeyUpdate($queueMessage);
             }
