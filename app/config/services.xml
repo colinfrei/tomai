@@ -20,6 +20,13 @@
             <argument type="service" id="doctrine.orm.default_entity_manager" />
             <argument type="service" id="logger" />
             <argument type="service" id="happyr.google.api.client" />
+            <argument type="service" id="service.queue_processor" />
+        </service>
+
+        <service id="service.queue_processor" class="AppBundle\Service\QueueProcessor">
+            <argument type="service" id="doctrine.orm.default_entity_manager" />
+            <argument type="service" id="happyr.google.api.client" />
+            <argument type="service" id="logger" />
         </service>
     </services>
 </container>
