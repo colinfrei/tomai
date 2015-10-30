@@ -93,6 +93,8 @@ class QueueProcessor
                         'messageEmail' => $message->getGoogleEmail()
                     )
                 );
+
+                $this->entityManager->remove($message);
                 continue;
             }
 
