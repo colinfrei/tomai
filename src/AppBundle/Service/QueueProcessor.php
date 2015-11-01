@@ -116,7 +116,7 @@ class QueueProcessor
             }
 
             foreach ($user->getCopies() as $copy) {
-                if (!$this->shouldMessageBeHandled($copy, $labels) {
+                if (!$this->shouldMessageBeHandled($copy, $labels)) {
                     $this->logger->debug(
                         'Skipped message for copy because it didn\'t match any relevant labels or had an ignored label',
                         array(
