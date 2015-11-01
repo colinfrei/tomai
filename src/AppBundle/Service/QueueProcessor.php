@@ -44,13 +44,20 @@ class QueueProcessor
         return $this->googleClient;
     }
 
-    public function process()
+    public function process(\DateTime $from = null)
     {
-        $now = microtime(true);
-        $fromTimestamp = ($now - 5 * 60) * 1000;
+        if (!$from) {
+            $from = new \DateTime('5 minutes ago');
+        }
+
+        $fromMicroTimestamp = $from->getTimestamp() * 1000;
 
         $messages = $this->entityManager->getRepository('AppBundle:QueueMessage')
-            ->findMessagesOlderThanX($fromTimestamp);
+            ->findMessagesOlderThanX($fromMicroTimestamp);
+
+        if (!$messages) {
+            return;
+        }
 
         $userEmails = [];
         /** @var QueueMessage $message */

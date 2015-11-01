@@ -46,11 +46,6 @@ class DefaultController extends Controller
         return $this->groupsMigrationClient;
     }
 
-    private function getLogger()
-    {
-        return $this->get('logger');
-    }
-
     /**
      * @return EntityManagerInterface
      */

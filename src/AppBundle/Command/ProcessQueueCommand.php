@@ -17,12 +17,16 @@ class ProcessQueueCommand extends ContainerAwareCommand
         $this
             ->setName('tomai:process-queue')
             ->setDescription('Process Message Queue')
+            ->addOption('since', null, InputOption::VALUE_REQUIRED, 'The number of minutes ago that messages should be processed', 5)
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->getContainer()->get('service.queue_processor')->process();
+        $xMinutesAgo = intval($input->getOption('since'));
+        $time = new \DateTime($xMinutesAgo . ' minutes ago');
+
+        $this->getContainer()->get('service.queue_processor')->process($time);
 
         $output->writeln('Done!');
     }
