@@ -105,8 +105,18 @@ class QueueProcessor
                 continue;
             }
 
+            $thread = $gmail->users_threads->get(
+                $message->getGoogleEmail(),
+                $actualMessage->getThreadId()
+            );
+
+            $labels = [];
+            foreach ($thread->getMessages() as $siblingMessage) {
+                $labels[] = $siblingMessage->getLabelIds();
+            }
+
             foreach ($user->getCopies() as $copy) {
-                if (!$this->shouldMessageBeHandled($copy, $actualMessage->getLabelIds())) {
+                if (!$this->shouldMessageBeHandled($copy, $labels) {
                     $this->logger->debug(
                         'Skipped message for copy because it didn\'t match any relevant labels or had an ignored label',
                         array(
