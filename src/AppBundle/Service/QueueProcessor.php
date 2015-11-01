@@ -112,7 +112,7 @@ class QueueProcessor
 
             $labels = [];
             foreach ($thread->getMessages() as $siblingMessage) {
-                $labels[] = $siblingMessage->getLabelIds();
+                $labels = array_merge($labels, $siblingMessage->getLabelIds());
             }
 
             foreach ($user->getCopies() as $copy) {
