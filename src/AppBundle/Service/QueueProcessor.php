@@ -121,7 +121,8 @@ class QueueProcessor
             }
 
             foreach ($user->getCopies() as $copy) {
-                if (!$this->shouldMessageBeHandled($copy, $labels, $actualMessage->getInternalDate())) {
+                $messageDate = new \DateTime("@" . ($actualMessage->getInternalDate()/1000));
+                if (!$this->shouldMessageBeHandled($copy, $labels, $messageDate)) {
                     $this->logger->debug(
                         'Skipped message for copy because it didn\'t match any relevant labels or had an ignored label',
                         array(
