@@ -11,11 +11,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class DefaultController extends Controller
 {
     private $googleClient;
-    private $groupsMigrationClient;
 
     private function getGoogleClient(User $user = null)
     {
@@ -35,15 +35,6 @@ class DefaultController extends Controller
         }
 
         return $this->googleClient;
-    }
-
-    private function getGroupsMigrationClient()
-    {
-        if (!isset($this->groupsMigrationClient)) {
-            $this->groupsMigrationClient = new \Google_Service_GroupsMigration($this->getGoogleClient()->getGoogleClient());
-        }
-
-        return $this->groupsMigrationClient;
     }
 
     /**
