@@ -4,7 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "47c4b65d787e4b0f9433b4bd6804b7ed",
+    "hash": "af56a95378d79d69d6b8491c6b810493",
+    "content-hash": "40df0400245fc3266c0a3eafbeef4039",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -880,17 +881,17 @@
         },
         {
             "name": "happyr/google-api-bundle",
-            "version": "dev-add-logger",
+            "version": "dev-groups-migration-service",
             "target-dir": "HappyR/Google/ApiBundle",
             "source": {
                 "type": "git",
                 "url": "https://github.com/colinfrei/GoogleApiBundle.git",
-                "reference": "9c4e0086506f83a8cb9375309a8cbbb89ccbf34e"
+                "reference": "8f073a335192acd47fbdad06709cdebb6fce1a31"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/colinfrei/GoogleApiBundle/zipball/9c4e0086506f83a8cb9375309a8cbbb89ccbf34e",
-                "reference": "9c4e0086506f83a8cb9375309a8cbbb89ccbf34e",
+                "url": "https://api.github.com/repos/colinfrei/GoogleApiBundle/zipball/8f073a335192acd47fbdad06709cdebb6fce1a31",
+                "reference": "8f073a335192acd47fbdad06709cdebb6fce1a31",
                 "shasum": ""
             },
             "require": {
@@ -928,9 +929,9 @@
                 "Google API"
             ],
             "support": {
-                "source": "https://github.com/colinfrei/GoogleApiBundle/tree/add-logger"
+                "source": "https://github.com/colinfrei/GoogleApiBundle/tree/groups-migration-service"
             },
-            "time": "2015-10-12 09:07:14"
+            "time": "2015-11-02 14:27:20"
         },
         {
             "name": "hwi/oauth-bundle",
