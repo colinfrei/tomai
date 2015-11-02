@@ -7,6 +7,7 @@ use AppBundle\Entity\QueueMessage;
 use AppBundle\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use HappyR\Google\ApiBundle\Services\GoogleClient;
+use HappyR\Google\ApiBundle\Services\GroupsMigrationService;
 use Psr\Log\LoggerInterface;
 
 class QueueProcessor
@@ -15,13 +16,14 @@ class QueueProcessor
     private $realGoogleClient;
     private $googleClient;
     private $logger;
-    private $groupsMigrationClient;
+    private $groupsMigrationService;
 
-    public function __construct(EntityManagerInterface $entityManager, GoogleClient $googleClient, LoggerInterface $logger)
+    public function __construct(EntityManagerInterface $entityManager, GoogleClient $googleClient, LoggerInterface $logger, GroupsMigrationService $groupsMigrationService)
     {
         $this->entityManager = $entityManager;
         $this->realGoogleClient = $googleClient;
         $this->logger = $logger;
+        $this->groupsMigrationService = $groupsMigrationService;
     }
 
     private function getGoogleClient(User $user = null)
@@ -148,7 +150,7 @@ class QueueProcessor
         $rfc822Message = $this->base64url_decode($message->getRaw());
 
         try {
-            $this->getGroupsMigrationClient()->archive->insert($copy->getGroupEmail(), array(
+            $this->groupsMigrationService->archive->insert($copy->getGroupEmail(), array(
                 'data' => $rfc822Message,
                 'mimeType' => 'message/rfc822',
                 'uploadType' => 'media'
@@ -164,15 +166,6 @@ class QueueProcessor
         $base64 = strtr($base64url, '-_', '+/');
         $plainText = base64_decode($base64);
         return ($plainText);
-    }
-
-    private function getGroupsMigrationClient()
-    {
-        if (!isset($this->groupsMigrationClient)) {
-            $this->groupsMigrationClient = new \Google_Service_GroupsMigration($this->getGoogleClient()->getGoogleClient());
-        }
-
-        return $this->groupsMigrationClient;
     }
 
     private function shouldMessageBeHandled(EmailCopyJob $copy, array $messageLabelIds)
