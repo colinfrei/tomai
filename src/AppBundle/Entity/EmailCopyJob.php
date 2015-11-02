@@ -45,6 +45,11 @@ class EmailCopyJob
     protected $ignored_labels = array();
 
     /**
+     * @ORM\Column(name="startDate", type="date")
+     */
+    protected $startDate;
+
+    /**
      * @ORM\Column(name="group_email", type="string", length=255)
      */
     protected $group_email;
@@ -53,6 +58,11 @@ class EmailCopyJob
      * @ORM\Column(name="group_url", type="string", length=255)
      */
     protected $group_url;
+
+    public function __construct()
+    {
+        $this->startDate = new \DateTime();
+    }
 
     /**
      * @return mixed
@@ -173,5 +183,13 @@ class EmailCopyJob
     public function setGroupUrl($group_url)
     {
         $this->group_url = $group_url;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStartDate()
+    {
+        return $this->startDate;
     }
 }

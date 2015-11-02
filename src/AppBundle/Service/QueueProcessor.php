@@ -121,7 +121,7 @@ class QueueProcessor
             }
 
             foreach ($user->getCopies() as $copy) {
-                if (!$this->shouldMessageBeHandled($copy, $labels)) {
+                if (!$this->shouldMessageBeHandled($copy, $labels, $actualMessage->getInternalDate())) {
                     $this->logger->debug(
                         'Skipped message for copy because it didn\'t match any relevant labels or had an ignored label',
                         array(
@@ -168,7 +168,7 @@ class QueueProcessor
         return ($plainText);
     }
 
-    private function shouldMessageBeHandled(EmailCopyJob $copy, array $messageLabelIds)
+    private function shouldMessageBeHandled(EmailCopyJob $copy, array $messageLabelIds, \DateTime $messageDate)
     {
         $matchCount = count(array_intersect($copy->getLabels(), $messageLabelIds));
 
@@ -178,10 +178,15 @@ class QueueProcessor
 
         $ignoredMatchCount = count(array_intersect($copy->getIgnoredLabels(), $messageLabelIds));
 
-        if ($ignoredMatchCount < 1) {
-            return true;
+        if ($ignoredMatchCount >= 1) {
+
+            return false;
         }
 
-        return false;
+        if ($messageDate < $copy->getStartDate()) {
+            return false;
+        }
+
+        return true;
     }
 }
