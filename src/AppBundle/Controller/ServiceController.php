@@ -85,9 +85,7 @@ class ServiceController
             $pubsub->projects_subscriptions->acknowledge($subscriptionUrl, $ackRequest);
         }
 
-        return $this->render('default/index.html.twig', array(
-            'base_dir' => realpath($this->container->getParameter('kernel.root_dir') . '/..'),
-        ));
+        return new Response('', '204');
     }
 
     /**
@@ -149,66 +147,6 @@ class ServiceController
 
             $this->entityManager->flush();
         }
-
-        /*
-
-                foreach ($user->getCopies() as $copy) { //TODO: move this outside foreach loop and use all the users labels for history filter
-                /** @var \Google_Service_Gmail_HistoryLabelAdded $historyMessage */
-        /*foreach ($historyPart->getLabelsAdded() as $historyMessage)
-        {
-            $queueMessages[] = new QueueMessage($historyMessage->getMessage()->id, $user->getEmail());
-            if (!$this->shouldMessageBeHandled($copy, $historyMessage->getLabelIds())) {
-                $this->getLogger()->debug(
-                    'Skipped message for copy because it didn\'t match any relevant labels or had an ignored label',
-                    array(
-                        'copy id' => $copy->getId(),
-                        'message id' => $historyMessage->getMessage()->id,
-                        'message label ids' => $historyMessage->getLabelIds(),
-                        'copy label ids' => $copy->getLabels(),
-                        'copy ignored label ids' => $copy->getIgnoredLabels()
-                    )
-                );
-
-                continue;
-            }
-
-            $actualMessage = $gmail->users_messages->get(
-                $user->getEmail(),
-                $historyMessage->getMessage()->getId(),
-                array('format' => 'raw')
-            );
-
-            $this->handleMessage($actualMessage, $copy);
-        }
-
-        /** @var \Google_Service_Gmail_HistoryMessageAdded $historyMessage */
-        /*foreach ($historyPart->getMessagesAdded() as $historyMessage) {
-            if (!$this->shouldMessageBeHandled($copy, $historyMessage->getMessage()->labelIds)) {
-                $this->getLogger()->debug(
-                    'Skipped message for copy because it didn\'t match any relevant labels or had an ignored label',
-                    array(
-                        'copy id' => $copy->getId(),
-                        'message id' => $historyMessage->getMessage()->id,
-                        'message label ids' => $historyMessage->labelIds,
-                        'copy label ids' => $copy->getLabels(),
-                        'copy ignored label ids' => $copy->getIgnoredLabels()
-                    )
-                );
-
-                continue;
-            }
-
-            $actualMessage = $gmail->users_messages->get(
-                $user->getEmail(),
-                $historyMessage->getMessage()->getId(),
-                array('format' => 'raw')
-            );
-
-            $this->handleMessage($actualMessage, $copy);
-        }
-    }
-}
-*/
     }
 
     private function listHistory(\Google_Service_Gmail $service, $userId, $startHistoryId) {

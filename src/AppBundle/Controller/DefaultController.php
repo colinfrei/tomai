@@ -70,6 +70,7 @@ class DefaultController extends Controller
     {
         $gmail = new \Google_Service_Gmail($this->getGoogleClient()->getGoogleClient());
 
+        /** @var \Google_Service_Gmail_ListLabelsResponse $labels */
         $labels = $gmail->users_labels->listUsersLabels($this->getUser()->getGoogleId());
         $formLabels = [];
         /** @var \Google_Service_Gmail_Label $label */
@@ -185,7 +186,7 @@ class DefaultController extends Controller
         $copy = $this->getEntityManager()->getRepository('AppBundle:EmailCopyJob')->find($id);
 
         if ($copy->getUser() != $this->getUser()) {
-            exit('Invalid User');
+            throw new HttpException('403', 'Invalid User');
         }
 
         $directoryClient = new \Google_Service_Directory($this->getGoogleClient()->getGoogleClient());

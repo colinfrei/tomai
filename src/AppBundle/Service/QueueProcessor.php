@@ -69,6 +69,7 @@ class QueueProcessor
             ->findUsersWithCopiesByEmail(array_unique($userEmails));
 
         $usersByEmail = [];
+        /** @var User $user */
         foreach ($users as $user) {
             $userEmail = $user->getEmail();
             $usersByEmail[$userEmail] = $user;
@@ -82,6 +83,7 @@ class QueueProcessor
 
             $gmail = new \Google_Service_Gmail($this->getGoogleClient($user)->getGoogleClient());
             try {
+                /** @var \Google_Service_Gmail_Message $actualMessage */
                 $actualMessage = $gmail->users_messages->get(
                     $message->getGoogleEmail(),
                     $message->getMessageId(),
@@ -111,6 +113,7 @@ class QueueProcessor
             );
 
             $labels = [];
+            /** @var \Google_Service_Gmail_Message $siblingMessage */
             foreach ($thread->getMessages() as $siblingMessage) {
                 $labels = array_merge($labels, $siblingMessage->getLabelIds());
             }
@@ -152,7 +155,7 @@ class QueueProcessor
             ));
         } catch (\Google_Service_Exception $e) {
             $this->logger->error($e);
-            exit;
+            throw new \Exception('Could not insert message into group.');
         }
     }
 
