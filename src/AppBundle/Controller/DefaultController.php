@@ -55,6 +55,16 @@ class DefaultController extends Controller
     }
 
     /**
+     * @Route("/list", name="public-list")
+     */
+    public function publicListAction(Request $request)
+    {
+        $copyJobs = $this->getEntityManager()->getRepository('AppBundle:EmailCopyJob')->findMessagesWithUserForList();
+
+        return $this->render('default/list.html.twig', array('copyJobs' => $copyJobs));
+    }
+
+    /**
      * @Route("/manage", name="manage-copyjobs")
      */
     public function manageCopyjobsAction(Request $request)

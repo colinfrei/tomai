@@ -5,12 +5,13 @@
         <div class="jumbotron">
             <h1>Tomai - be transparent.</h1>
             <p>Tomai let's you easily give others access to your email. Because transparency is a good thing.</p>
-            <p><a class="btn btn-info btn-lg" href="login/google" role="button">Log in with Google</a></p>
+            <p><a class="btn btn-info btn-lg" href="{{ url('manage-copyjobs') }}" role="button">Log in with Google</a></p>
         </div>
         <div class="col-lg-12">
             <p class="lead">
                 Tomai copies email messages that are labelled with a label from Gmail to a Google Group. Choose one or more of your existing labels, so you don't need to change your workflow. By default a Google Group will give everyone in your Google Apps organisation read-access to those emails, but you can adjust the permissions of the group to be more specific.
             </p>
+            <a class="lead" href="{{ url('public-list') }}">Show me email others have published!</a>
         </div>
 
         <div class="col-lg-12">
@@ -18,14 +19,19 @@
             <h4>Who will see my email?</h4>
             <p>Read access is handled by the Google Group, but that allows much more flexibility than Gmail. By default, anyone in the Google Apps organisation can read the emails. You can adjust this in the Google Group settings if you like though (click on 'Manage -> Permissions -> Basic permissions').</p>
 
-            <h4>There are a lot of weird characters in my email.</h4>
-            <p>Email as a protocol is really messy, and the Google Groups Migration API Tomai uses isn't great either. That means, that sometimes (surprisingly often), I need to convert the content of the email into a different encoding. I'm sure there are quite some places where I haven't done this yet, or it's not working correctly. Hopefully that will get better in time.</p>
+            <h4>How can I prevent an email from showing up in the Google Group?</h4>
+            <p>You can set one or more labels that opt-out of copying that email. So for example you could say that anything with the label <em>ProjectX</em> or <em>ProjectX/Todo</em> is added, unless it has the <em>ignoreTomai</em> label. If you have filters set up that automatically label messages, than it can happen that Tomai processes the message before you see it and add an ignore label. See also 'How can I remove a message from the Google Group?' below.</p>
+
+            <h4>How can I remove a message from the Google Group?</h4>
+            <p>
+                Unfortunately, Google only offers APIs to import messages into a Google Group. That means, once the message is there it can't be removed automatically anymore. You can still manually remove it through the Google Groups interface if necessary.
+            </p>
 
             <h4>Can you add X?</h4>
             <p>The code is <a href="https://github.com/colinfrei/tomai">on Github</a>, please add an issue there.</p>
 
             <h4>What does the name mean?</h4>
-            <p>We seem to have a theme in Liip's Team Lego of picking japanese words for tools. According to <a href="https://translate.google.com/#en/ja/transparency">Google Translate</a>, Tōmei is japanese for transparency.</p>
+            <p>We seem to have a theme in Liip's Team Lego of picking japanese words for tools. According to <a href="https://translate.google.com/#en/ja/transparency">Google Translate</a>, <em>Tōmei</em> is japanese for transparency. For some inexplicable reason I mistakenly replaced the e with an a when setting everything up :)</p>
         </div>
     </div>
 {% endblock %}

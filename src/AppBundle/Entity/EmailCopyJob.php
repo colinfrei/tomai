@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity
  * @ORM\Table(name="copyemailjob")
+ * @ORM\Entity(repositoryClass="AppBundle\Entity\EmailCopyJobRepository")
  */
 class EmailCopyJob
 {

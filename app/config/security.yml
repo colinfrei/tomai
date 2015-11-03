@@ -50,6 +50,7 @@ security:
         - { path: ^/login/google, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/login/check-google, role: IS_AUTHENTICATED_ANONYMOUSLY } # not sure if this is necessary
         - { path: ^/google-push, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/list, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/process-queue, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/, role: ROLE_USER }
 
