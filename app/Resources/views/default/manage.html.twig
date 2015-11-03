@@ -1,39 +1,33 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <div class="container">
-        <div class="page-header">
-            <h1>Tomai</h1>
-        </div>
-
-        {% if copies|length > 0 %}
-        <p>You have the following jobs set up already</p>
-        <table class="table table-striped">
+    {% if copies|length > 0 %}
+    <p>You have the following jobs set up already</p>
+    <table class="table table-striped">
+        <tr>
+            <th>Name</th>
+            <th>Labels</th>
+            <th></th>
+        </tr>
+        {% for copy in copies %}
             <tr>
-                <th>Name</th>
-                <th>Labels</th>
-                <th></th>
+                <td>{{ copy.name }} (<a href="{{ copy.googleGroupUrl }}">view Google group</a>)</td>
+                <td>{{ copy.labelNames|join(', ') }}</td>
+                <td>edit | <a href="{{ path('delete-copy', {'id': copy.id}) }}">delete</a></td>
             </tr>
-            {% for copy in copies %}
-                <tr>
-                    <td>{{ copy.name }} (<a href="{{ copy.googleGroupUrl }}">view Google group</a>)</td>
-                    <td>{{ copy.labelNames|join(', ') }}</td>
-                    <td>edit | <a href="{{ path('delete-copy', {'id': copy.id}) }}">delete</a></td>
-                </tr>
-            {% endfor %}
-        </table>
-        {% else %}
-            You don't have any email copy jobs set up yet. Add your first one below.
-        {% endif %}
+        {% endfor %}
+    </table>
+    {% else %}
+        You don't have any email copy jobs set up yet. Add your first one below.
+    {% endif %}
 
-        <div class="panel panel-info">
-            <div class="panel-heading">Make more email transparent!</div>
-            <div class="panel-body">
-                <p>Set up a job that'll copy emails from your Gmail account to a Google Group.</p>
-                {{ form_start(form) }}
-                {{ form_widget(form) }}
-                {{ form_end(form) }}
-            </div>
+    <div class="panel panel-info">
+        <div class="panel-heading">Make more email transparent!</div>
+        <div class="panel-body">
+            <p>Set up a job that'll copy emails from your Gmail account to a Google Group.</p>
+            {{ form_start(form) }}
+            {{ form_widget(form) }}
+            {{ form_end(form) }}
         </div>
     </div>
 {% endblock %}
@@ -62,6 +56,6 @@
 {% endblock %}
 
 {% block stylesheets %}
-<link rel="stylesheet" href="{{ asset('assets/vendor/chosen/chosen.min.css') }}">
-<link rel="stylesheet" href="{{ asset('assets/vendor/bootstrap/dist/css/bootstrap.min.css') }}">
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('assets/vendor/chosen/chosen.min.css') }}">
 {% endblock %}

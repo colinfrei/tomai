@@ -5,11 +5,36 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
+        {% block stylesheets %}
+            <link rel="stylesheet" href="{{ asset('assets/vendor/bootstrap/dist/css/bootstrap.min.css') }}">
+            <style>
+                .jumbotron {
+                    padding-top: 10px;
+                    padding-bottom: 30px;
+                }
+                .tomai-list li {
+                    padding: 5px;
+                }
+                .tomai-list li div {
+                    padding: 10px;
+                    min-height: 120px;
+                }
+                .tomai-list li div h3 {
+                    margin-top: 0;
+                }
+            </style>
+        {% endblock %}
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
     <body>
-        {% block body %}{% endblock %}
+        <div class="container">
+            {% block header %}
+                <div class="jumbotron">
+                    <h1>Tomai - be transparent.</h1>
+                </div>
+            {% endblock %}
+            {% block body %}{% endblock %}
+        </div>
         {% block javascripts %}{% endblock %}
     </body>
 </html>
