@@ -25,17 +25,20 @@ class GooglePubSubSetupCommand extends ContainerAwareCommand
         // check if settings are still on default
         // if so, ask for confirmation
 
-        $pubsub = new \Google_Service_Pubsub($this->getGoogleClient()->getGoogleClient());
+        $pubsub = $this->getContainer()->get('google.pubsub');
+        // all the above might work since we don't have a google account set up yet
 
         $questionHelper = $this->getHelper('question');
-        $projectIdQuestion = new Question('What\'s the Project ID of this project in Google (see https://console.developers.google.com/project)?');
+        $projectIdQuestion = new Question('What\'s the Project ID of this project in Google (see https://console.developers.google.com/project)? ');
         $projectId = $questionHelper->ask($input, $output, $projectIdQuestion);
 
-        $projectNumberQuestion = new Question('What\'s the Project Number of this project in Google? (go to https://console.developers.google.com/project and then click on the project');
+        $projectNumberQuestion = new Question('What\'s the Project Number of this project in Google? (go to https://console.developers.google.com/project and then click on the project) ');
         $projectNumber = $questionHelper->ask($input, $output, $projectNumberQuestion);
 
-        $topicNameQuestion = new Question('What topic name should we use for the PubSub Subscription? Usually you can leave this on the default, unless you have multiple instances of Tomai set up on the same domain.', 'tomai');
+        $topicNameQuestion = new Question('What topic name should we use for the PubSub Subscription? Usually you can leave this on the default, unless you have multiple instances of Tomai set up on the same domain. ', 'tomai');
         $topicName = $questionHelper->ask($input, $output, $topicNameQuestion);
+        $projectId = 'email-copier';
+        $topicName = 'tomai123';
 
         $output->writeln('<info>Setting up PubSub Topic</info>');
         $topic = new \Google_Service_Pubsub_Topic();
