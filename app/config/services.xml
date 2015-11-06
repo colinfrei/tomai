@@ -42,6 +42,7 @@
             </argument>
             <argument>%google_service_account_sub_user%</argument>
             <argument>%kernel.cache_dir%/google_client</argument>
+            <argument type="service" id="logger" />
         </service>
 
         <service id="google.directory" class="AppBundle\Service\Google\DirectoryService">

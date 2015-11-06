@@ -2,27 +2,16 @@
 
 namespace AppBundle\Service\Google;
 
+use Psr\Log\LoggerInterface;
+
 class GoogleServiceClient
 {
     /**
      * @var \Google_Client
      */
-    protected $client;
+    private $client;
 
-    /**
-     * Constructor
-     *
-     * @param string      $clientId           Id of client
-     * @param string      $serviceAccountName Account name (service type)
-     * @param string      $applicationName    Application Name
-     * @param string      $privateKeyPath     Path to private key file
-     * @param array       $scopes             Authentication scopes
-     * @param string|null $sessionCacheDir    Session cache directory, null for default
-     *
-     * @throws \RuntimeException      If private key file does not exist or is not readable.
-     * @throws \Google_Auth_Exception If authentication with Google fails.
-     */
-    public function __construct($clientId, $serviceAccountName, $applicationName, $privateKeyPath, array $scopes, $subUser = null, $sessionCacheDir = null)
+    public function __construct($clientId, $serviceAccountName, $applicationName, $privateKeyPath, array $scopes, $subUser = null, $sessionCacheDir = null, LoggerInterface $symfonyLogger = null)
     {
         if (!file_exists($privateKeyPath)) {
             throw new \RuntimeException(sprintf('Cannot find private key path: %s', $privateKeyPath));
@@ -51,6 +40,11 @@ class GoogleServiceClient
         $this->client->setAssertionCredentials($credentials);
         if ($this->client->getAuth()->isAccessTokenExpired()) {
             $this->client->getAuth()->refreshTokenWithAssertion($credentials);
+        }
+
+        if ($symfonyLogger) {
+            $googleLogger = new \Google_Logger_Psr($this->client, $symfonyLogger);
+            $this->client->setLogger($googleLogger);
         }
     }
 
