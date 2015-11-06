@@ -12,7 +12,7 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
-class DefaultController extends Controller
+class ManageController extends Controller
 {
     private $googleClient;
 
