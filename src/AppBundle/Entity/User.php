@@ -37,6 +37,11 @@ class User extends BaseUser
     protected $email;
 
     /**
+     * @ORM\Column(name="username", type="string", length=255, nullable=true)
+     */
+    protected $username;
+
+    /**
      * @ORM\Column(name="google_refresh_token", type="string", length=255, nullable=true)
      */
     protected $google_refresh_token;
