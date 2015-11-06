@@ -39,6 +39,7 @@
                 <argument>https://www.googleapis.com/auth/admin.directory.group</argument>
                 <argument>https://www.googleapis.com/auth/apps.groups.settings</argument>
                 <argument>https://www.googleapis.com/auth/apps.groups.migration</argument>
+                <argument>https://www.googleapis.com/auth/pubsub</argument>
             </argument>
             <argument>%google_service_account_sub_user%</argument>
             <argument>%kernel.cache_dir%/google_client</argument>
@@ -52,6 +53,9 @@
             <argument type="service" id="google_api_service_client" />
         </service>
         <service id="google.groups_migration" class="AppBundle\Service\Google\GroupsMigration">
+            <argument type="service" id="google_api_service_client" />
+        </service>
+        <service id="google.pubsub" class="AppBundle\Service\Google\PubSub">
             <argument type="service" id="google_api_service_client" />
         </service>
     </services>

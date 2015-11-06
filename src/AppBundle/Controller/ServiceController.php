@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\QueueMessage;
 use AppBundle\Entity\User;
+use AppBundle\Service\Google\PubSub;
 use AppBundle\Service\QueueProcessor;
 use Doctrine\ORM\EntityManagerInterface;
 use HappyR\Google\ApiBundle\Services\GoogleClient;
@@ -23,13 +24,15 @@ class ServiceController
     private $realGoogleClient;
     private $googleClient;
     private $queueProcessor;
+    private $pubSubClient;
 
-    public function __construct(EntityManagerInterface $entityManager, LoggerInterface $logger, GoogleClient $googleClient, QueueProcessor $queueProcessor)
+    public function __construct(EntityManagerInterface $entityManager, LoggerInterface $logger, GoogleClient $googleClient, QueueProcessor $queueProcessor, PubSub $pubSubClient)
     {
         $this->entityManager = $entityManager;
         $this->logger = $logger;
         $this->realGoogleClient = $googleClient;
         $this->queueProcessor = $queueProcessor;
+        $this->pubSubClient = $pubSubClient;
     }
 
     private function getGoogleClient(User $user = null)
@@ -58,14 +61,12 @@ class ServiceController
      */
     public function pullMessagesAction(Request $request)
     {
-        $pubsub = new \Google_Service_Pubsub($this->getGoogleClient()->getGoogleClient());
-
         $pullRequest = new \Google_Service_Pubsub_PullRequest();
         $pullRequest->setMaxMessages(2);
 
         $subscriptionUrl = 'projects/email-copier/subscriptions/adfhaerg'; //TODO: config this
 
-        $pullResponse = $pubsub->projects_subscriptions->pull($subscriptionUrl, $pullRequest);
+        $pullResponse = $this->pubSubClient->projects_subscriptions->pull($subscriptionUrl, $pullRequest);
         /** @var \Google_Service_Pubsub_ReceivedMessage $receivedMessage */
         foreach($pullResponse->getReceivedMessages() as $receivedMessage) {
             $message = json_decode(base64_decode($receivedMessage->getMessage()->getData()), true);
@@ -80,7 +81,7 @@ class ServiceController
 
             $ackRequest = new \Google_Service_Pubsub_AcknowledgeRequest();
             $ackRequest->setAckIds($receivedMessage->getAckId());
-            $pubsub->projects_subscriptions->acknowledge($subscriptionUrl, $ackRequest);
+            $this->pubSubClient->projects_subscriptions->acknowledge($subscriptionUrl, $ackRequest);
         }
 
         return new Response('', '204');
