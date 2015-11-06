@@ -23,3 +23,8 @@ parameters:
     google_oauth_client_secret: def456
     google_developer_key: ghi789
     google_apps_domain: liip.ch
+
+    google_service_account_client_id:
+    google_service_account_name:
+    google_service_account_p12_filename:
+    google_service_account_sub_user: 
