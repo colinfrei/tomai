@@ -50,7 +50,7 @@
         <service id="google.groups_settings" class="AppBundle\Service\Google\GroupsSettings">
             <argument type="service" id="google_api_service_client" />
         </service>
-        <service id="google.groups_migration" class="AppBundle\Service\Google\groupsMigration">
+        <service id="google.groups_migration" class="AppBundle\Service\Google\GroupsMigration">
             <argument type="service" id="google_api_service_client" />
         </service>
     </services>
