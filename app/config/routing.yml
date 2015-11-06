@@ -36,3 +36,4 @@ google_login:
 app:
     resource: "@AppBundle/Controller/"
     type:     annotation
+

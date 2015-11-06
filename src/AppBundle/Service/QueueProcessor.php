@@ -5,9 +5,9 @@ namespace AppBundle\Service;
 use AppBundle\Entity\EmailCopyJob;
 use AppBundle\Entity\QueueMessage;
 use AppBundle\Entity\User;
+use AppBundle\Service\Google\GroupsMigration;
 use Doctrine\ORM\EntityManagerInterface;
 use HappyR\Google\ApiBundle\Services\GoogleClient;
-use HappyR\Google\ApiBundle\Services\GroupsMigrationService;
 use Psr\Log\LoggerInterface;
 
 class QueueProcessor
@@ -18,7 +18,7 @@ class QueueProcessor
     private $logger;
     private $groupsMigrationService;
 
-    public function __construct(EntityManagerInterface $entityManager, GoogleClient $googleClient, LoggerInterface $logger, GroupsMigrationService $groupsMigrationService)
+    public function __construct(EntityManagerInterface $entityManager, GoogleClient $googleClient, LoggerInterface $logger, GroupsMigration $groupsMigrationService)
     {
         $this->entityManager = $entityManager;
         $this->realGoogleClient = $googleClient;

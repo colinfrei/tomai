@@ -27,7 +27,31 @@
             <argument type="service" id="doctrine.orm.default_entity_manager" />
             <argument type="service" id="happyr.google.api.client" />
             <argument type="service" id="logger" />
-            <argument type="service" id="happyr.google.api.groups_migration" />
+            <argument type="service" id="google.groups_migration" />
+        </service>
+
+        <service id="google_api_service_client" class="AppBundle\Service\Google\GoogleServiceClient">
+            <argument>%google_service_account_client_id%</argument>
+            <argument>%google_service_account_name%</argument>
+            <argument>Tomai</argument>
+            <argument>%kernel.root_dir%/config/%google_service_account_p12_filename%</argument>
+            <argument type="collection">
+                <argument>https://www.googleapis.com/auth/admin.directory.group</argument>
+                <argument>https://www.googleapis.com/auth/apps.groups.settings</argument>
+                <argument>https://www.googleapis.com/auth/apps.groups.migration</argument>
+            </argument>
+            <argument>%google_service_account_sub_user%</argument>
+            <argument>%kernel.cache_dir%/google_client</argument>
+        </service>
+
+        <service id="google.directory" class="AppBundle\Service\Google\DirectoryService">
+            <argument type="service" id="google_api_service_client" />
+        </service>
+        <service id="google.groups_settings" class="AppBundle\Service\Google\GroupsSettings">
+            <argument type="service" id="google_api_service_client" />
+        </service>
+        <service id="google.groups_migration" class="AppBundle\Service\Google\groupsMigration">
+            <argument type="service" id="google_api_service_client" />
         </service>
     </services>
 </container>
