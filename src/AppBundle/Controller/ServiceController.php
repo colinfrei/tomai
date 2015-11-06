@@ -2,7 +2,6 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\EmailCopyJob;
 use AppBundle\Entity\QueueMessage;
 use AppBundle\Entity\User;
 use AppBundle\Service\QueueProcessor;
@@ -11,7 +10,6 @@ use HappyR\Google\ApiBundle\Services\GoogleClient;
 use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -94,7 +92,6 @@ class ServiceController
      */
     public function googlePushAction(Request $request)
     {
-        //TODO: add delay somehow
         $messageData = json_decode($request->getContent());
         $message = json_decode(base64_decode($messageData->message->data), true);
         /** @var User $user */
