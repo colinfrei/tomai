@@ -92,18 +92,33 @@ class QueueProcessor
                     array('format' => 'raw')
                 );
             } catch (\Google_Service_Exception $e) {
-                if ($e->getCode() != '404') {
-                    throw $e;
-                }
+                switch ($e->getCode()) {
+                    case '404':
+                        $this->logger->error(
+                            'Could not find gmail message',
+                            array(
+                                'errorMessage' => $e->getMessage(),
+                                'messageId' => $message->getMessageId(),
+                                'messageEmail' => $message->getGoogleEmail()
+                            )
+                        );
+                    break;
 
-                $this->logger->error(
-                    'Could not find gmail message',
-                    array(
-                        'errorMessage' => $e->getMessage(),
-                        'messageId' => $message->getMessageId(),
-                        'messageEmail' => $message->getGoogleEmail()
-                    )
-                );
+                    case '403':
+                        $this->logger->error(
+                            'Wrong permissions',
+                            array(
+                                'errorMessage' => $e->getMessage(),
+                                'messageId' => $message->getMessageId(),
+                                'messageEmail' => $message->getGoogleEmail()
+                            )
+                        );
+                    break;
+
+                    default:
+                        throw $e;
+                        // this won't fall through to the $em->remove()
+                }
 
                 $this->entityManager->remove($message);
                 continue;
