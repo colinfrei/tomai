@@ -164,6 +164,7 @@ class QueueProcessor
 
     private function handleMessage(\Google_Service_Gmail_Message $message, EmailCopyJob $copy)
     {
+        $this->logger->debug('Handling message');
         $rfc822Message = $this->base64url_decode($message->getRaw());
 
         try {
