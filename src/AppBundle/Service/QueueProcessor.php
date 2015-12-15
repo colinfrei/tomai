@@ -194,7 +194,10 @@ class QueueProcessor
             return false;
         }
 
-        $ignoredMatchCount = count(array_intersect($copy->getIgnoredLabels(), $messageLabelIds));
+        // Ignore drafts and any ignore labels on the copy
+        $ignoredLabels = array_merge($copy->getIgnoredLabels(), array('DRAFT'));
+        
+        $ignoredMatchCount = count(array_intersect($ignoredLabels, $messageLabelIds));
 
         if ($ignoredMatchCount >= 1) {
 
