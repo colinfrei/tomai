@@ -2,29 +2,33 @@
 # Set parameters here that may be different on each deployment target of the app, e.g. development, staging, production.
 # http://symfony.com/doc/current/best_practices/configuration.html#infrastructure-related-configuration
 parameters:
-    database_driver: pdo_sqlite
+    # Enter the details of your database. You most likely don't want to change the database_driver or database_port variable
     database_host:     127.0.0.1
-    database_port:     ~
     database_name:     symfony
     database_user:     root
     database_password: ~
-    # You should uncomment this if you want use pdo_sqlite
-    database_path: "%kernel.root_dir%/data.db3"
+    database_driver:   pdo_sqlite
+    database_port:     ~
 
+    # A secret key that's used to generate certain security-related tokens
+    # Change this to be unique to your setup
+    secret:            "FPcH0X6532YQDMeBpjVjrt1n5CBpY8kVBFNeM7G1XxNlj8QrKwD68DFT3kMSN37"
+
+    # OAuth client settings
+    google_oauth_client_id:
+    google_oauth_client_secret:
+    google_developer_key:
+    google_apps_domain:
+
+    # Service account settings
+    google_service_account_client_id:
+    google_service_account_name:
+    google_service_account_p12_filename:
+    google_service_account_sub_user:
+
+    # Setting up your outgoing mail server is default to Symfony, but isn't used in this project
+    # You can leave these settings as they are
     mailer_transport:  smtp
     mailer_host:       127.0.0.1
     mailer_user:       ~
     mailer_password:   ~
-
-    # A secret key that's used to generate certain security-related tokens
-    secret:            "q39grae7bhodlak4tq3liaeghap4ht3480t7gp9hü340gipnl34uoe5zvtp3489tghbüe0abjäabirlbo4qugrsffaerfef"
-
-    google_oauth_client_id: abc123
-    google_oauth_client_secret: def456
-    google_developer_key: ghi789
-    google_apps_domain: liip.ch
-
-    google_service_account_client_id:
-    google_service_account_name:
-    google_service_account_p12_filename:
-    google_service_account_sub_user: 
