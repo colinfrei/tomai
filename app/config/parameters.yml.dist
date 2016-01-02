@@ -14,6 +14,10 @@ parameters:
     # Change this to be unique to your setup
     secret:            "FPcH0X6532YQDMeBpjVjrt1n5CBpY8kVBFNeM7G1XxNlj8QrKwD68DFT3kMSN37"
 
+    ####
+    # The OAuth client and Service account settings need a bit of setup in Google.
+    # Follow the instructions in the "Setting up the application in Google" part of the readme (https://github.com/colinfrei/tomai#setting-up-the-application-in-google) to get the values for these parameters.
+
     # OAuth client settings
     google_oauth_client_id:
     google_oauth_client_secret:
@@ -25,6 +29,8 @@ parameters:
     google_service_account_name:
     google_service_account_p12_filename:
     google_service_account_sub_user:
+
+    ####
 
     # Setting up your outgoing mail server is default to Symfony, but isn't used in this project
     # You can leave these settings as they are
