@@ -32,7 +32,7 @@ hwi_oauth_redirect:
     prefix:   /login
 
 google_login:
-    pattern: /login/check-google
+    path: /login/check-google
 app:
     resource: "@AppBundle/Controller/"
     type:     annotation
