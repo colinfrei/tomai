@@ -55,7 +55,10 @@ While you're there, set the `google_apps_domain` parameter to your domain (_toma
 
 ##### Service Account
 Next we'll set up the service account. For that, click on the menu button at the top left and choose 'Permissions', and then on the _Service accounts_ tab at the top, and then on the _Create service account_ button.
-Give it a name and set the service account ID it generates as the `google_service_account_name` parameter in your app/config/parameters.yml file. Check the 'Furnish a new private key' checkbox and choose a P12 key, and check the 'Enable Google Apps Domain-wide Delegation' checkbox.
-Click on Create and you'll be prompted to save the p12 key file - save it to your app/config folder, and set the filename as the `google_service_account_p12_filename` variable in your app/config/parameters.yml file.
+Give it a name and set the service account ID it generates as the `google_service_account_name` parameter in your app/config/parameters.yml file. Check the 'Furnish a new private key' checkbox and choose a json key, and check the 'Enable Google Apps Domain-wide Delegation' checkbox.
+Click on Create and you'll be prompted to save the json key file - save it to your app/config folder, and set the filename as the `google_service_account_json_filename` variable in your app/config/parameters.yml file.
 You don't need to set the _notasecret_ key password anywhere - that's the same for all keys and is set by default.
 The last thing you need to set in this section is `google_service_account_sub_user' parameter in your paremeters.yml file - set that to the address of your google apps admin (probably your email address).
+You'll also need to allow the service account to do stuff in the name of users - this has to be done in the Google Admin backend. Go to https://admin.google.com/liip.ch/AdminHome?chromeless=1#OGX:ManageOauthClients (or Security -> Show more -> Advanced settings -> Manage API client access) and add a new client. The Client Name is the Client ID that's listed in the JSON file (a string of numbers), for the scopes, copy this comma separated list of scopes:
+
+    https://www.googleapis.com/auth/admin.directory.group,https://www.googleapis.com/auth/apps.groups.migration,https://www.googleapis.com/auth/apps.groups.settings,https://www.googleapis.com/auth/pubsub

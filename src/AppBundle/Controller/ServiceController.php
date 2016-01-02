@@ -4,10 +4,10 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\QueueMessage;
 use AppBundle\Entity\User;
+use AppBundle\Service\Google\GoogleOAuthClient;
 use AppBundle\Service\Google\PubSub;
 use AppBundle\Service\QueueProcessor;
 use Doctrine\ORM\EntityManagerInterface;
-use HappyR\Google\ApiBundle\Services\GoogleClient;
 use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -21,40 +21,23 @@ class ServiceController
 {
     private $entityManager;
     private $logger;
-    private $realGoogleClient;
     private $googleClient;
     private $queueProcessor;
     private $pubSubClient;
 
-    public function __construct(EntityManagerInterface $entityManager, LoggerInterface $logger, GoogleClient $googleClient, QueueProcessor $queueProcessor, PubSub $pubSubClient)
+    public function __construct(EntityManagerInterface $entityManager, LoggerInterface $logger, GoogleOAuthClient $googleClient, QueueProcessor $queueProcessor, PubSub $pubSubClient)
     {
         $this->entityManager = $entityManager;
         $this->logger = $logger;
-        $this->realGoogleClient = $googleClient;
+        $this->googleClient = $googleClient;
         $this->queueProcessor = $queueProcessor;
         $this->pubSubClient = $pubSubClient;
     }
 
-    private function getGoogleClient(User $user = null)
+    private function getGoogleClient(User $user)
     {
-        if (!isset($this->googleClient)) {
-            $this->googleClient = $this->realGoogleClient;
-
-            if (!$user) {
-                $user = $this->getUser();
-            }
-
-            $token = array(
-                'access_token' => $user->getGoogleAccessToken(),
-                'refresh_token' => $user->getGoogleRefreshToken()
-            );
-
-            $this->googleClient->setAccessToken(json_encode($token));
-        }
-
-        return $this->googleClient;
+        return $this->googleClient->getClient($user);
     }
-
 
     /**
      * @Route("/pull", name="pull-messages")
@@ -125,7 +108,7 @@ class ServiceController
 
     private function processHistory(User $user, $historyId)
     {
-        $gmail = new \Google_Service_Gmail($this->getGoogleClient($user)->getGoogleClient());
+        $gmail = new \Google_Service_Gmail($this->getGoogleClient($user));
 
         $history = $this->listHistory($gmail, $user->getEmail(), $historyId);
         /** @var \Google_Service_Gmail_History $historyPart */

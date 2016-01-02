@@ -5,45 +5,29 @@ namespace AppBundle\Service;
 use AppBundle\Entity\EmailCopyJob;
 use AppBundle\Entity\QueueMessage;
 use AppBundle\Entity\User;
+use AppBundle\Service\Google\GoogleOAuthClient;
 use AppBundle\Service\Google\GroupsMigration;
 use Doctrine\ORM\EntityManagerInterface;
-use HappyR\Google\ApiBundle\Services\GoogleClient;
 use Psr\Log\LoggerInterface;
 
 class QueueProcessor
 {
     private $entityManager;
-    private $realGoogleClient;
     private $googleClient;
     private $logger;
     private $groupsMigrationService;
 
-    public function __construct(EntityManagerInterface $entityManager, GoogleClient $googleClient, LoggerInterface $logger, GroupsMigration $groupsMigrationService)
+    public function __construct(EntityManagerInterface $entityManager, GoogleOAuthClient $googleClient, LoggerInterface $logger, GroupsMigration $groupsMigrationService)
     {
         $this->entityManager = $entityManager;
-        $this->realGoogleClient = $googleClient;
+        $this->googleClient = $googleClient;
         $this->logger = $logger;
         $this->groupsMigrationService = $groupsMigrationService;
     }
 
-    private function getGoogleClient(User $user = null)
+    private function getGoogleClient(User $user)
     {
-        if (!isset($this->googleClient)) {
-            $this->googleClient = $this->realGoogleClient;
-
-            if (!$user) {
-                $user = $this->getUser();
-            }
-
-            $token = array(
-                'access_token' => $user->getGoogleAccessToken(),
-                'refresh_token' => $user->getGoogleRefreshToken()
-            );
-
-            $this->googleClient->setAccessToken(json_encode($token));
-        }
-
-        return $this->googleClient;
+        return $this->googleClient->getClient($user);
     }
 
     public function process(\DateTime $from = null)
@@ -83,7 +67,7 @@ class QueueProcessor
                 throw new \Exception('trying to process message for user that doesn\'t exist');
             }
 
-            $gmail = new \Google_Service_Gmail($this->getGoogleClient($user)->getGoogleClient());
+            $gmail = new \Google_Service_Gmail($this->getGoogleClient($user));
             try {
                 /** @var \Google_Service_Gmail_Message $actualMessage */
                 $actualMessage = $gmail->users_messages->get(
@@ -196,7 +180,7 @@ class QueueProcessor
 
         // Ignore drafts and any ignore labels on the copy
         $ignoredLabels = array_merge($copy->getIgnoredLabels(), array('DRAFT'));
-        
+
         $ignoredMatchCount = count(array_intersect($ignoredLabels, $messageLabelIds));
 
         if ($ignoredMatchCount >= 1) {

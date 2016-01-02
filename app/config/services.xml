@@ -19,23 +19,21 @@
         <service id="controller.service" class="AppBundle\Controller\ServiceController">
             <argument type="service" id="doctrine.orm.default_entity_manager" />
             <argument type="service" id="logger" />
-            <argument type="service" id="happyr.google.api.client" />
+            <argument type="service" id="google_api_oauth_client" />
             <argument type="service" id="service.queue_processor" />
             <argument type="service" id="google.pubsub" />
         </service>
 
         <service id="service.queue_processor" class="AppBundle\Service\QueueProcessor">
             <argument type="service" id="doctrine.orm.default_entity_manager" />
-            <argument type="service" id="happyr.google.api.client" />
+            <argument type="service" id="google_api_oauth_client" />
             <argument type="service" id="logger" />
             <argument type="service" id="google.groups_migration" />
         </service>
 
         <service id="google_api_service_client" class="AppBundle\Service\Google\GoogleServiceClient">
-            <argument>%google_service_account_client_id%</argument>
-            <argument>%google_service_account_name%</argument>
             <argument>Tomai</argument>
-            <argument>%kernel.root_dir%/config/%google_service_account_p12_filename%</argument>
+            <argument>%kernel.root_dir%/config/%google_service_account_json_filename%</argument>
             <argument type="collection">
                 <argument>https://www.googleapis.com/auth/admin.directory.group</argument>
                 <argument>https://www.googleapis.com/auth/apps.groups.settings</argument>
@@ -43,7 +41,13 @@
                 <argument>https://www.googleapis.com/auth/pubsub</argument>
             </argument>
             <argument>%google_service_account_sub_user%</argument>
-            <argument>%kernel.cache_dir%/google_client</argument>
+            <argument type="service" id="logger" />
+        </service>
+
+        <service id="google_api_oauth_client" class="AppBundle\Service\Google\GoogleOAuthClient">
+            <argument>Tomai</argument>
+            <argument>%google_oauth_client_id%</argument>
+            <argument>%google_oauth_client_secret%</argument>
             <argument type="service" id="logger" />
         </service>
 

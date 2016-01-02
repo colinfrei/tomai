@@ -14,26 +14,9 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class ManageController extends Controller
 {
-    private $googleClient;
-
-    private function getGoogleClient(User $user = null)
+    private function getGoogleClient(User $user)
     {
-        if (!isset($this->googleClient)) {
-            $this->googleClient = $this->get('happyr.google.api.client');
-
-            if (!$user) {
-                $user = $this->getUser();
-            }
-
-            $token = array(
-                'access_token' => $user->getGoogleAccessToken(),
-                'refresh_token' => $user->getGoogleRefreshToken()
-            );
-
-            $this->googleClient->setAccessToken(json_encode($token));
-        }
-
-        return $this->googleClient;
+        return $this->get('google_api_oauth_client')->getClient($user);
     }
 
     /**
@@ -49,7 +32,7 @@ class ManageController extends Controller
      */
     public function manageCopyjobsAction(Request $request)
     {
-        $gmail = new \Google_Service_Gmail($this->getGoogleClient()->getGoogleClient());
+        $gmail = new \Google_Service_Gmail($this->getGoogleClient($this->getUser()));
 
         /** @var \Google_Service_Gmail_ListLabelsResponse $labels */
         $labels = $gmail->users_labels->listUsersLabels($this->getUser()->getGoogleId());
@@ -183,7 +166,7 @@ class ManageController extends Controller
     {
         $topicName = 'projects/email-copier/topics/test1'; //TODO: make this come from config
 
-        $gmail = new \Google_Service_Gmail($this->getGoogleClient()->getGoogleClient());
+        $gmail = new \Google_Service_Gmail($this->getGoogleClient($this->getUser()));
         $watchRequest = new \Google_Service_Gmail_WatchRequest();
         $watchRequest->setTopicName($topicName);
 

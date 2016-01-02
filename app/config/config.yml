@@ -77,16 +77,6 @@ swiftmailer:
     password:  "%mailer_password%"
     spool:     { type: memory }
 
-# app/config/config.yml
-# you will get these parameters form https://code.google.com/apis/console/"
-happy_r_google_api:
-    application_name: Tomai
-    oauth2_client_id:  %google_oauth_client_id%
-    oauth2_client_secret:  %google_oauth_client_secret%
-    oauth2_redirect_uri: http://localhost:8000
-    developer_key: %google_developer_key%
-    site_name: tomai.liip.ch
-
 hwi_oauth:
     # name of the firewall in which this bundle is active, this setting MUST be set
     firewall_name: main

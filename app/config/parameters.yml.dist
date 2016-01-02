@@ -15,8 +15,12 @@ parameters:
     secret:            "FPcH0X6532YQDMeBpjVjrt1n5CBpY8kVBFNeM7G1XxNlj8QrKwD68DFT3kMSN37"
 
     ####
-    # The OAuth client and Service account settings need a bit of setup in Google.
+    # The Google project, OAuth client and Service account settings need a bit of setup in Google.
     # Follow the instructions in the "Setting up the application in Google" part of the readme (https://github.com/colinfrei/tomai#setting-up-the-application-in-google) to get the values for these parameters.
+
+    # Google project settings
+    google_project_id:
+    google_pubsub_topicname: tomai
 
     # OAuth client settings
     google_oauth_client_id:
@@ -25,9 +29,7 @@ parameters:
     google_apps_domain:
 
     # Service account settings
-    google_service_account_client_id:
-    google_service_account_name:
-    google_service_account_p12_filename:
+    google_service_account_json_filename:
     google_service_account_sub_user:
 
     ####
