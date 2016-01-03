@@ -47,6 +47,7 @@ class ManageController extends Controller
         }
 
         asort($formLabels);
+        $formLabels = array_flip($formLabels);
 
         $copy = new EmailCopyJob();
         $form = $this->createFormBuilder($copy)
@@ -99,7 +100,7 @@ class ManageController extends Controller
         foreach ($this->getUser()->getCopies() AS $copy) {
             $labelNames = [];
             foreach ($copy->getLabels() as $labelId) {
-                $labelNames[] = $formLabels[$labelId];
+                $labelNames[] = array_search($labelId, $formLabels);
             }
             $viewCopies[] = array(
                 'id' => $copy->getId(),
