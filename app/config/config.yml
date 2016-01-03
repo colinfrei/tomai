@@ -35,9 +35,8 @@ framework:
 twig:
     debug:            "%kernel.debug%"
     strict_variables: "%kernel.debug%"
-    form:
-        resources:
-            - 'AppBundle:Form:bootstrap_3_horizontal_layout_with_help.html.twig'
+    form_themes:
+        - 'AppBundle:Form:bootstrap_3_horizontal_layout_with_help.html.twig'
 
 # Assetic Configuration
 assetic:

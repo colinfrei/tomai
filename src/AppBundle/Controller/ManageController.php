@@ -50,23 +50,25 @@ class ManageController extends Controller
 
         $copy = new EmailCopyJob();
         $form = $this->createFormBuilder($copy)
-            ->add('name', 'text', array(
+            ->add('name', 'Symfony\Component\Form\Extension\Core\Type\TextType', array(
                 'help' => 'This will be also be the name (not the email address) of the Google Group.<br />Use something that makes sense out of context, like "Colin\'s Client A emails"'
             ))
-            ->add('labels', 'choice', array(
+            ->add('labels', 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', array(
                 'choices' => $formLabels,
                 'required' => true,
                 'multiple' => true,
+                'choices_as_values' => true,
                 'attr' => array('class' => 'chosen')
             ))
-            ->add('ignored_labels', 'choice', array(
+            ->add('ignored_labels', 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', array(
                 'choices' => $formLabels,
                 'required' => true,
                 'multiple' => true,
                 'required' => false,
+                'choices_as_values' => true,
                 'attr' => array('class' => 'chosen')
             ))
-            ->add('save', 'submit')
+            ->add('save', 'Symfony\Component\Form\Extension\Core\Type\SubmitType')
             ->getForm();
 
         $form->handleRequest($request);
