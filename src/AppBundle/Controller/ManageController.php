@@ -173,8 +173,7 @@ class ManageController extends Controller
         $watchRequest = new \Google_Service_Gmail_WatchRequest();
         $watchRequest->setTopicName($topicName);
 
-        // Let's just handle the filtering on our side, makes it a bit easier
-        //$watchRequest->setLabelIds($copy->getLabels());
+        // Not setting labelIds on the watch request since we're handling that on our side
         $watchResponse = $gmail->users->watch($this->getUser()->getGoogleId(), $watchRequest);
 
         $copyUser = $copy->getUser();

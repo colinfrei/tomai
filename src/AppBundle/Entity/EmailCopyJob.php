@@ -123,7 +123,7 @@ class EmailCopyJob
 
 
     /**
-     * @return mixed
+     * @return array
      */
     public function getLabels()
     {
@@ -131,15 +131,15 @@ class EmailCopyJob
     }
 
     /**
-     * @param mixed $labels
+     * @param array $labels
      */
-    public function setLabels($labels)
+    public function setLabels(array $labels)
     {
         $this->labels = $labels;
     }
 
     /**
-     * @return mixed
+     * @return array
      */
     public function getIgnoredLabels()
     {
@@ -147,9 +147,9 @@ class EmailCopyJob
     }
 
     /**
-     * @param mixed $ignored_labels
+     * @param array $ignored_labels
      */
-    public function setIgnoredLabels($ignored_labels)
+    public function setIgnoredLabels(array $ignored_labels)
     {
         $this->ignored_labels = $ignored_labels;
     }
