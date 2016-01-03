@@ -16,12 +16,19 @@
             <tag name="form.type_extension" alias="form" />
         </service>
 
+        <service id="service.pub_sub_helper" class="AppBundle\Service\PubSubHelper">
+            <argument type="service" id="google.pubsub" />
+            <argument>%google_project_id%</argument>
+            <argument>%google_pubsub_topicname%</argument>
+        </service>
+
+        <!-- Controllers -->
         <service id="controller.service" class="AppBundle\Controller\ServiceController">
             <argument type="service" id="doctrine.orm.default_entity_manager" />
             <argument type="service" id="logger" />
             <argument type="service" id="google_api_oauth_client" />
             <argument type="service" id="service.queue_processor" />
-            <argument type="service" id="google.pubsub" />
+            <argument type="service" id="service.pub_sub_helper" />
         </service>
 
         <service id="service.queue_processor" class="AppBundle\Service\QueueProcessor">
@@ -31,6 +38,7 @@
             <argument type="service" id="google.groups_migration" />
         </service>
 
+        <!-- Google Stuff -->
         <service id="google_api_service_client" class="AppBundle\Service\Google\GoogleServiceClient">
             <argument>Tomai</argument>
             <argument>%kernel.root_dir%/config/%google_service_account_json_filename%</argument>

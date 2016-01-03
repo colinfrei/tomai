@@ -5,7 +5,7 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\QueueMessage;
 use AppBundle\Entity\User;
 use AppBundle\Service\Google\GoogleOAuthClient;
-use AppBundle\Service\Google\PubSub;
+use AppBundle\Service\PubSubHelper;
 use AppBundle\Service\QueueProcessor;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -23,15 +23,15 @@ class ServiceController
     private $logger;
     private $googleClient;
     private $queueProcessor;
-    private $pubSubClient;
+    private $pubSubHelper;
 
-    public function __construct(EntityManagerInterface $entityManager, LoggerInterface $logger, GoogleOAuthClient $googleClient, QueueProcessor $queueProcessor, PubSub $pubSubClient)
+    public function __construct(EntityManagerInterface $entityManager, LoggerInterface $logger, GoogleOAuthClient $googleClient, QueueProcessor $queueProcessor, PubSubHelper $pubSubHelper)
     {
         $this->entityManager = $entityManager;
         $this->logger = $logger;
         $this->googleClient = $googleClient;
         $this->queueProcessor = $queueProcessor;
-        $this->pubSubClient = $pubSubClient;
+        $this->pubSubHelper = $pubSubHelper;
     }
 
     private function getGoogleClient(User $user)
@@ -44,12 +44,8 @@ class ServiceController
      */
     public function pullMessagesAction(Request $request)
     {
-        $pullRequest = new \Google_Service_Pubsub_PullRequest();
-        $pullRequest->setMaxMessages(2);
+        $pullResponse = $this->pubSubHelper->makePullRequest(2);
 
-        $subscriptionUrl = 'projects/' . $this->getParameter('google_project_id') . '/subscriptions/' . $this->getParameter('google_pubsub_topicname');
-
-        $pullResponse = $this->pubSubClient->projects_subscriptions->pull($subscriptionUrl, $pullRequest);
         /** @var \Google_Service_Pubsub_ReceivedMessage $receivedMessage */
         foreach($pullResponse->getReceivedMessages() as $receivedMessage) {
             $message = json_decode(base64_decode($receivedMessage->getMessage()->getData()), true);
@@ -62,9 +58,7 @@ class ServiceController
             $this->entityManager->persist($user);
             $this->entityManager->flush();
 
-            $ackRequest = new \Google_Service_Pubsub_AcknowledgeRequest();
-            $ackRequest->setAckIds($receivedMessage->getAckId());
-            $this->pubSubClient->projects_subscriptions->acknowledge($subscriptionUrl, $ackRequest);
+            $this->pubSubHelper->ackRequest($receivedMessage->getAckId());
         }
 
         return new Response('', '204');
