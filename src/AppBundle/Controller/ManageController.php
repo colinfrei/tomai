@@ -167,7 +167,7 @@ class ManageController extends Controller
 
     private function addGmailWatch(EmailCopyJob $copy)
     {
-        $topicName = 'projects/email-copier/topics/test1'; //TODO: make this come from config
+        $topicName = 'projects/' . $this->getParameter('google_project_id') . '/topics/' . $this->getParameter('google_pubsub_topicname');
 
         $gmail = new \Google_Service_Gmail($this->getGoogleClient($this->getUser()));
         $watchRequest = new \Google_Service_Gmail_WatchRequest();

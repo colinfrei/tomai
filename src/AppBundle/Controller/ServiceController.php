@@ -47,7 +47,7 @@ class ServiceController
         $pullRequest = new \Google_Service_Pubsub_PullRequest();
         $pullRequest->setMaxMessages(2);
 
-        $subscriptionUrl = 'projects/email-copier/subscriptions/adfhaerg'; //TODO: config this
+        $subscriptionUrl = 'projects/' . $this->getParameter('google_project_id') . '/subscriptions/' . $this->getParameter('google_pubsub_topicname');
 
         $pullResponse = $this->pubSubClient->projects_subscriptions->pull($subscriptionUrl, $pullRequest);
         /** @var \Google_Service_Pubsub_ReceivedMessage $receivedMessage */
