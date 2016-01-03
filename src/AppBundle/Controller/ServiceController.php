@@ -47,7 +47,7 @@ class ServiceController
         $pullResponse = $this->pubSubHelper->makePullRequest(2);
 
         /** @var \Google_Service_Pubsub_ReceivedMessage $receivedMessage */
-        foreach($pullResponse->getReceivedMessages() as $receivedMessage) {
+        foreach ($pullResponse->getReceivedMessages() as $receivedMessage) {
             $message = json_decode(base64_decode($receivedMessage->getMessage()->getData()), true);
             $user = $this->entityManager->getRepository('AppBundle:User')->findOneBy(array('email' => $message['emailAddress']));
             $this->logger->debug('Processing Google Pubsub Message', $message);
@@ -141,7 +141,7 @@ class ServiceController
                     $pageToken = $historyResponse->getNextPageToken();
                 }
             } catch (\Exception $e) {
-                print 'An error occurred: ' . $e->getMessage();
+                print 'An error occurred: '.$e->getMessage();
             }
         } while ($pageToken);
 

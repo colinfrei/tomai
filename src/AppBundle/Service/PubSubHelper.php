@@ -12,7 +12,7 @@ class PubSubHelper
     public function __construct(PubSub $pubSubClient, $googleProjectId, $pubsubTopicname)
     {
         $this->pubSubClient = $pubSubClient;
-        $this->subscriptionUrl = 'projects/' . $googleProjectId . '/subscriptions/' . $pubsubTopicname;
+        $this->subscriptionUrl = 'projects/'.$googleProjectId.'/subscriptions/'.$pubsubTopicname;
     }
 
     public function makePullRequest($maxMessages)
