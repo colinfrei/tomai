@@ -18,17 +18,20 @@ parameters:
     # The Google project, OAuth client and Service account settings need a bit of setup in Google.
     # Follow the instructions in the "Setting up the application in Google" part of the readme (https://github.com/colinfrei/tomai#setting-up-the-application-in-google) to get the values for these parameters.
 
-    # Google project settings
+    ## Google project settings
     google_project_id:
-    google_pubsub_topicname: tomai
 
-    # OAuth client settings
-    google_oauth_client_id:
-    google_oauth_client_secret:
-    google_developer_key:
+    # Set this to the domain name you use for google apps.
     google_apps_domain:
 
-    # Service account settings
+    # The pubsub topicname is an internal id. In most cases it's necessary to change this.
+    google_pubsub_topicname: tomai
+
+    ## OAuth client settings
+    google_oauth_client_id:
+    google_oauth_client_secret:
+
+    ## Service account settings
     google_service_account_json_filename:
     google_service_account_sub_user:
 
