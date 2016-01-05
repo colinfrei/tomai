@@ -57,7 +57,6 @@ Next we'll set up the service account. For that, click on the menu button at the
 Give your service account a name (anything will do, it's mostly for you to identify it) and check the 'Furnish a new private key' checkbox, choosing json as the key format. Also, make sure the 'Enable Google Apps Domain-wide Delegation' checkbox is checked.
 
 Click on Create and you'll be prompted to save the json key file. Save it to your app/config folder, and set the filename as the `google_service_account_json_filename` parameter in your _app/config/parameters.yml_ file.
-You don't need to set the _notasecret_ key password anywhere - that's the same for all keys and is set by default.
 
 The last thing you need to set in this section is `google_service_account_sub_user` parameter in your parameters.yml file - set that to the address of your google apps admin (probably your email address).
 
