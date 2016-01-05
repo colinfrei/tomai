@@ -75,6 +75,11 @@ class ServiceController
         /** @var User $user */
         $user = $this->entityManager->getRepository('AppBundle:User')->findOneBy(array('email' => $message['emailAddress']));
 
+        if (!($user instanceof \AppBundle\Entity\User)) {
+            $this->logger->error('Got push notification for message that didn\'t have corresponding user', $message);
+
+            return new Response('', 204);
+        }
 
         $this->logger->debug('Processing Google Pubsub Message', $message);
 
