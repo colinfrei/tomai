@@ -1,12 +1,21 @@
 <?php
 namespace AppBundle;
 
+use FOS\UserBundle\Model\UserManagerInterface;
 use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
 use HWI\Bundle\OAuthBundle\Security\Core\User\FOSUBUserProvider as BaseClass;
+use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class FOSUBUserProvider extends BaseClass
 {
+    private $googleAppsDomain;
+
+    public function __construct(UserManagerInterface $userManager, array $properties, $googleAppsDomain)
+    {
+        $this->googleAppsDomain = $googleAppsDomain;
+        parent::__construct($userManager, $properties);
+    }
 
     /**
      * {@inheritDoc}
@@ -47,6 +56,10 @@ class FOSUBUserProvider extends BaseClass
         //when the user is registrating
         if (null === $user) {
             $service = $response->getResourceOwner()->getName();
+            if (!$this->hasValidDomain($response->getEmail())) {
+                throw new UnsupportedUserException('User has an invalid email domain.');
+            }
+
             $setter = 'set'.ucfirst($service);
             $setter_id = $setter.'Id';
             $setter_token = $setter.'AccessToken';
@@ -71,6 +84,9 @@ class FOSUBUserProvider extends BaseClass
         //if user exists - go with the HWIOAuth way
         $user = parent::loadUserByOAuthUserResponse($response);
         $user->setEnabled(true);
+        if (!$this->hasValidDomain($response->getEmail())) {
+            $user->setEnabled(false);
+        }
 
         $serviceName = $response->getResourceOwner()->getName();
         $setter = 'set' . ucfirst($serviceName) . 'AccessToken';
@@ -79,5 +95,16 @@ class FOSUBUserProvider extends BaseClass
         $user->$setter($response->getAccessToken());
 
         return $user;
+    }
+
+    private function hasValidDomain($email)
+    {
+        $compareString = '@' . $this->googleAppsDomain;
+        $domainLength = strlen($compareString);
+        if (substr($email, -$domainLength) == $compareString) {
+            return true;
+        }
+
+        return false;
     }
 }

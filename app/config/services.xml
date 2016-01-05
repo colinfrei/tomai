@@ -10,6 +10,7 @@
             <argument type="collection">
                 <argument key="google">google_id</argument>
             </argument>
+            <argument>%google_apps_domain%</argument>
         </service>
 
         <service id="form_help" class="AppBundle\FormHelp">
