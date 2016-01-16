@@ -28,7 +28,8 @@ class GoogleOAuthClient
     {
         $token = array(
             'access_token' => $user->getGoogleAccessToken(),
-            'refresh_token' => $user->getGoogleRefreshToken()
+            'refresh_token' => $user->getGoogleRefreshToken(),
+            'expires_in' => null
         );
 
         $this->client->setAccessToken(json_encode($token));
