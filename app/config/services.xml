@@ -14,7 +14,7 @@
         </service>
 
         <service id="form_help" class="AppBundle\FormHelp">
-            <tag name="form.type_extension" alias="form" />
+            <tag name="form.type_extension" alias="Symfony\Component\Form\Extension\Core\Type\FormType" />
         </service>
 
         <service id="service.pub_sub_helper" class="AppBundle\Service\PubSubHelper">
