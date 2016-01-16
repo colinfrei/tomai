@@ -1,4 +1,4 @@
-#FosUserBundle Routes
+#FosUserBundle routes
 fos_user_security:
     resource: "@FOSUserBundle/Resources/config/routing/security.xml"
 
@@ -33,6 +33,12 @@ hwi_oauth_redirect:
 
 google_login:
     path: /login/check-google
+
+# FOSJsRoutingBundle routes
+fos_js_routing:
+    resource: "@FOSJsRoutingBundle/Resources/config/routing/routing.xml"
+
+# App Routes
 app:
     resource: "@AppBundle/Controller/"
     type:     annotation

@@ -10,6 +10,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class ManageController extends Controller
@@ -35,7 +36,7 @@ class ManageController extends Controller
         $gmail = new \Google_Service_Gmail($this->getGoogleClient($this->getUser()));
 
         /** @var \Google_Service_Gmail_ListLabelsResponse $labels */
-        $labels = $gmail->users_labels->listUsersLabels($this->getUser()->getGoogleId());
+        $labels = $gmail->users_labels->listUsersLabels('me');
         $formLabels = [];
         /** @var \Google_Service_Gmail_Label $label */
         foreach ($labels->getLabels() as $label) {
@@ -144,25 +145,41 @@ class ManageController extends Controller
         $groupSettingsClient->groups->patch($groupResponse->getEmail(), $groupSettings);
     }
 
-    //TODO: make this a POST
     /**
-     * @Route("/deletecopy/{id}", name="delete-copy")
+     * @Route("/deletecopy/{id}", name="delete-copy", options={"expose"=true})
+     * @Method("DELETE")
      */
     public function deleteCopyAction(Request $request, $id)
     {
         /** @var EmailCopyJob $copy */
         $copy = $this->getEntityManager()->getRepository('AppBundle:EmailCopyJob')->find($id);
+        if (!$copy) {
+            throw new HttpException('400', 'Invalid CopyJob');
+        }
 
         if ($copy->getUser() != $this->getUser()) {
             throw new HttpException('403', 'Invalid User');
         }
 
-        $this->get('google.directory')->groups->delete($copy->getGroupEmail());
+        // if last user, delete the gmail watch as well
+        $userCopies = $copy->getUser()->getCopies();
+        if (count($userCopies) == 1) {
+            $gmail = new \Google_Service_Gmail($this->getGoogleClient($this->getUser()));
+
+            $gmail->users->stop($copy->getUser()->getGoogleId());
+        }
+
+        try {
+            $this->get('google.directory')->groups->delete($copy->getGroupEmail());
+        } catch (\Google_Service_Exception $e) {
+            // In some cases it doesn't exist, which causes the error. Not sure how to see if it's an actual error...
+            $this->get('logger')->error($e->getMessage());
+        }
 
         $this->getEntityManager()->remove($copy);
         $this->getEntityManager()->flush();
 
-        $this->redirectToRoute('manage-copyjobs');
+        return new Response('', 204);
     }
 
     private function addGmailWatch(EmailCopyJob $copy)
