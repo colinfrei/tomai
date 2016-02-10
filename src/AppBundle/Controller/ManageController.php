@@ -53,7 +53,7 @@ class ManageController extends Controller
         $copy = new EmailCopyJob();
         $form = $this->createFormBuilder($copy)
             ->add('name', 'Symfony\Component\Form\Extension\Core\Type\TextType', array(
-                'help' => 'This will be also be the name (not the email address) of the Google Group.<br />Use something that makes sense out of context, like "Colin\'s Client A emails"'
+                'help' => '<strong>This is publicly viewable!</strong><br />This will also be the name (not the email address) of the Google Group.<br />Use something that makes sense out of context, like "Colin\'s Client A emails"'
             ))
             ->add('labels', 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', array(
                 'choices' => $formLabels,
