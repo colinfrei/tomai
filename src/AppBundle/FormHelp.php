@@ -42,6 +42,8 @@ class FormHelp extends AbstractTypeExtension
      */
     public function getExtendedType()
     {
-        return FormType::class;
+        // not running php 5.5 yet
+        //return FormType::class;
+        return 'Symfony\Component\Form\Extension\Core\Type\FormType';
     }
 }
