@@ -19,6 +19,9 @@ class GoogleOAuthClient
         $this->client->setClientId($clientId);
         $this->client->setClientSecret($clientSecret);
 
+        // disable the cache, to see if it's the reason stupid things happen
+        $this->client->setCache(new \Google_Cache_Null());
+
         if ($logger) {
             $this->client->setLogger($logger);
         }
