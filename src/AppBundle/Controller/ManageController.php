@@ -142,7 +142,18 @@ class ManageController extends Controller
         $groupSettings->setIncludeInGlobalAddressList("false");
         $groupSettings->setAllowWebPosting("false");
         $groupSettings->setShowInGroupDirectory("true");
-        $groupSettingsClient->groups->patch($groupResponse->getEmail(), $groupSettings);
+        try {
+            $groupSettingsClient->groups->patch($groupResponse->getEmail(), $groupSettings);
+        } catch (\Google_Service_Exception $e) {
+            if ($e->getCode() != 400) {
+                throw $e;
+            }
+
+            $this->get('logger')->error(
+                'Could not save group settings',
+                array('groupId' => $groupResponse->getEmail(),'exception' => $e)
+            );
+        }
     }
 
     /**
