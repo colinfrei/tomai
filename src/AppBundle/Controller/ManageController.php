@@ -36,7 +36,7 @@ class ManageController extends Controller
         $gmail = new \Google_Service_Gmail($this->getGoogleClient($this->getUser()));
 
         /** @var \Google_Service_Gmail_ListLabelsResponse $labels */
-        $labels = $gmail->users_labels->listUsersLabels('me');
+        $labels = $gmail->users_labels->listUsersLabels($this->getUser()->getGoogleId());
         $formLabels = [];
         /** @var \Google_Service_Gmail_Label $label */
         foreach ($labels->getLabels() as $label) {
