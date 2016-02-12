@@ -33,6 +33,7 @@ class GoogleOAuthClient
         );
 
         $this->client->setAccessToken(json_encode($token));
+        $this->client->fetchAccessTokenWithRefreshToken();
 
         return $this->client;
     }
