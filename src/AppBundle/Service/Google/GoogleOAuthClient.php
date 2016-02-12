@@ -14,7 +14,7 @@ class GoogleOAuthClient
 
     public function __construct($applicationName, $clientId, $clientSecret, LoggerInterface $logger = null)
     {
-        $this->client = new \Google_Client();
+        $this->client = new GoogleClientWithLogs();
         $this->client->setApplicationName($applicationName);
         $this->client->setClientId($clientId);
         $this->client->setClientSecret($clientSecret);
