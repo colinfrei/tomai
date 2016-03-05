@@ -158,8 +158,16 @@ class QueueProcessor
                 'uploadType' => 'media'
             ));
         } catch (\Google_Service_Exception $e) {
-            $this->logger->error($e);
-            throw new \Exception('Could not insert message into group.');
+            if ($e->getCode() == 404) {
+                // possibly the group was deleted.
+                $this->logger->error(
+                    'Could not insert message into group, possibly group was deleted manually.',
+                    array('groupEmail' => $copy->getGroupEmail())
+                );
+            } else {
+                $this->logger->error($e);
+                throw new \Exception('Could not insert message into group.');
+            }
         }
     }
 
