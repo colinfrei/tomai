@@ -36,9 +36,10 @@ class GmailWatchHelper
         if (!$copyUser->getGmailHistoryId()) {
             $copyUser->setGmailHistoryId($watchResponse->getHistoryId());
             $this->entityManager->persist($copyUser);
-            $this->entityManager->flush();
         }
         
         $copy->updateLastWatchRenewal();
+        $this->entityManager->persist($copy);
+        $this->entityManager->flush();
     }
 }
