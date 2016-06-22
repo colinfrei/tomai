@@ -23,6 +23,13 @@
             <argument>%google_pubsub_topicname%</argument>
         </service>
 
+        <service id="service.gmail_watch_helper" class="AppBundle\Service\GmailWatchHelper">
+            <argument>%google_project_id%</argument>
+            <argument>%google_pubsub_topicname%</argument>
+            <argument type="service" id="google_api_oauth_client" />
+            <argument type="service" id="doctrine.orm.default_entity_manager" />
+        </service>
+
         <!-- Controllers -->
         <service id="controller.service" class="AppBundle\Controller\ServiceController">
             <argument type="service" id="doctrine.orm.default_entity_manager" />

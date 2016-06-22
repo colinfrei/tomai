@@ -87,7 +87,7 @@ class ManageController extends Controller
             $this->getEntityManager()->persist($copy);
             $this->getEntityManager()->flush();
 
-            $this->addGmailWatch($copy);
+            $this->get('service.gmail_watch_helper')->addGmailWatch($copy);
 
             //TODO:
             // - trigger initial import
@@ -193,22 +193,18 @@ class ManageController extends Controller
         return new Response('', 204);
     }
 
-    private function addGmailWatch(EmailCopyJob $copy)
+    /**
+     * @Route("/add-single-watch/{copyId}", name="manage-addwatch")
+     */
+    public function manageAddwatchAction($copyId, Request $request)
     {
-        $topicName = 'projects/' . $this->getParameter('google_project_id') . '/topics/' . $this->getParameter('google_pubsub_topicname');
-
-        $gmail = new \Google_Service_Gmail($this->getGoogleClient($this->getUser()));
-        $watchRequest = new \Google_Service_Gmail_WatchRequest();
-        $watchRequest->setTopicName($topicName);
-
-        // Not setting labelIds on the watch request since we're handling that on our side
-        $watchResponse = $gmail->users->watch($this->getUser()->getGoogleId(), $watchRequest);
-
-        $copyUser = $copy->getUser();
-        if (!$copyUser->getGmailHistoryId()) {
-            $copyUser->setGmailHistoryId($watchResponse->getHistoryId());
-            $this->getEntityManager()->persist($copyUser);
-            $this->getEntityManager()->flush();
+        $copy = $this->getEntityManager()->getRepository('AppBundle:EmailCopyJob')->find($copyId);
+        if (!$copy) {
+            throw new HttpException('400', 'Invalid CopyJob');
         }
+
+        $this->get('service.gmail_watch_helper')->addGmailWatch($copy);
+
+        return new Response('', 204);
     }
 }

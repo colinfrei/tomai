@@ -60,6 +60,11 @@ class EmailCopyJob
      */
     protected $group_url;
 
+    /**
+     * @ORM\Column(name="last_watch_renewal", type="date")
+     */
+    protected $lastWatchRenewal;
+
     public function __construct()
     {
         $this->startDate = new \DateTime();
@@ -192,5 +197,18 @@ class EmailCopyJob
     public function getStartDate()
     {
         return $this->startDate;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLastWatchRenewal()
+    {
+        return $this->lastWatchRenewal;
+    }
+
+    public function updateLastWatchRenewal()
+    {
+        $this->lastWatchRenewal = new \DateTime();
     }
 }
