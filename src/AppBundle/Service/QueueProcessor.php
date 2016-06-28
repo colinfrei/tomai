@@ -158,17 +158,113 @@ class QueueProcessor
                 'uploadType' => 'media'
             ));
         } catch (\Google_Service_Exception $e) {
-            if ($e->getCode() == 404) {
+            $this->handleInsertException($e, $copy, $message, 1);
+        }
+    }
+
+    private function handleInsertException(
+        \Google_Service_Exception $e,
+        EmailCopyJob $copy,
+        \Google_Service_Gmail_Message $message,
+        $count
+    )
+    {
+        switch ($e->getCode()) {
+            case 404:
                 // possibly the group was deleted.
                 $this->logger->error(
                     'Could not insert message into group, possibly group was deleted manually.',
                     array('groupEmail' => $copy->getGroupEmail())
                 );
-            } else {
+                break;
+
+            case 413:
+                $this->logger->info(
+                    'Message could not be inserted into Google Group because it was too big.',
+                    array(
+                        'groupEmail' => $copy->getGroupEmail(),
+                        'messageId' => $message->id
+                    )
+                );
+
+                if ($count == 2) {
+                    try {
+                        $this->groupsMigrationService->archive->insert($copy->getGroupEmail(), array(
+                            'data' => $this->buildRfc822Message($message),
+                            'mimeType' => 'message/rfc822',
+                            'uploadType' => 'media'
+                        ));
+                    } catch (\Google_Service_Exception $e) {
+                        $this->handleInsertException($e, $copy, $message, 2);
+                    }
+
+                    break;
+                }
+
+            default:
                 $this->logger->error($e);
                 throw new \Exception('Could not insert message into group.');
-            }
         }
+    }
+
+    /**
+     * Try and build a "valid" message with only the text/plain parts, as a fallback
+     * for when the raw message can't be handled correctly
+     *
+     * @param \Google_Service_Gmail_Message $message
+     *
+     * @return string
+     */
+    private function buildRfc822Message(\Google_Service_Gmail_Message $message)
+    {
+        $messagePayload = $message->getPayload();
+        $headers = array();
+        $bodyData = '';
+        foreach ($messagePayload->getHeaders() as $header) {
+            $headers[$header['name']] = $header['value'];
+        }
+        foreach ($messagePayload->getParts() as $part) {
+            if ($part->getMimeType() != 'text/plain') {
+                continue;
+            }
+            foreach ($part->getHeaders() as $header) {
+                $headers[$header['name']] = $header['value'];
+            }
+            $bodyData = base64_decode($part->getBody()->data);
+        }
+        $output = '';
+        $setContentTransferEncodingHeader = false;
+        foreach ($headers as $header => $value) {
+            switch (strtolower($header)) {
+                case 'content-transfer-encoding':
+                    $this->logger->debug('Replaced content-transfer-encoding header', array('original' => $value));
+                    $value = 'quoted-printable';
+                    $setContentTransferEncodingHeader = true;
+                    break;
+                case 'content-type':
+                    $contentTypeParts = explode(';', $value);
+                    foreach ($contentTypeParts as $key => $contentTypePart) {
+                        $contentTypePart = trim($contentTypePart);
+                        $searchString = 'charset=';
+                        if (strtolower(substr($contentTypePart, 0, strlen($searchString))) == $searchString) {
+                            $contentTypeParts[$key] = 'charset="UTF-8"';
+                        }
+                    }
+                    $newValue = implode('; ', $contentTypeParts);
+                    $this->logger->debug(
+                        'Replaced content-type header',
+                        array('original' => $value, 'replaced with' => $newValue)
+                    );
+                    $value = $newValue;
+                    break;
+            }
+            $output .= $header . ': ' . $value . "\r\n";
+        }
+        if (!$setContentTransferEncodingHeader) {
+            $headers['Content-Transfer-Encoding'] = 'quoted-printable';
+        }
+        $output .= "\r\n" . quoted_printable_encode($bodyData);
+        return $output;
     }
 
     private function base64url_decode($base64url)
