@@ -187,7 +187,7 @@ class QueueProcessor
                     )
                 );
 
-                if ($count == 2) {
+                if ($count < 2) {
                     try {
                         $this->groupsMigrationService->archive->insert($copy->getGroupEmail(), array(
                             'data' => $this->buildRfc822Message($message),
