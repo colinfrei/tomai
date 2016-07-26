@@ -197,8 +197,10 @@ class QueueProcessor
                                     'messageId' => $message->id
                                 )
                             );
+
+                            return;
                         }
-                        
+
                         $newlyBuiltMessage = $this->buildRfc822Message($message);
                         $strlen = mb_strlen($newlyBuiltMessage, '8bit');
                         if ($strlen > 16000000) {
@@ -230,6 +232,17 @@ class QueueProcessor
                         )
                     );
                 }
+                break;
+
+            case 500:
+                $this->logger->error(
+                    'Received 500 error from Google, skipping message',
+                    array(
+                        'exception' => $e,
+                        'groupEmail' => $copy->getGroupEmail(),
+                        'messageId' => $message->id
+                    )
+                );
                 break;
 
             default:
