@@ -189,6 +189,16 @@ class QueueProcessor
 
                 if ($count < 2) {
                     try {
+                        if (!$message->getPayload()) {
+                            $this->logger->info(
+                                'Skipping message since it\'s too big',
+                                array(
+                                    'groupEmail' => $copy->getGroupEmail(),
+                                    'messageId' => $message->id
+                                )
+                            );
+                        }
+                        
                         $newlyBuiltMessage = $this->buildRfc822Message($message);
                         $strlen = mb_strlen($newlyBuiltMessage, '8bit');
                         if ($strlen > 16000000) {
