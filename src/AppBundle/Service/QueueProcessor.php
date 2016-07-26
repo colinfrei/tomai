@@ -189,6 +189,18 @@ class QueueProcessor
 
                 if ($count < 2) {
                     try {
+                        $newlyBuiltMessage = $this->buildRfc822Message($message);
+                        $strlen = mb_strlen($newlyBuiltMessage, '8bit');
+                        if ($strlen > 16000000) {
+                            $this->logger->info(
+                                'Skipping message since it\'s too big',
+                                array(
+                                    'groupEmail' => $copy->getGroupEmail(),
+                                    'messageId' => $message->id
+                                )
+                            );
+                            return;
+                        }
                         $this->groupsMigrationService->archive->insert($copy->getGroupEmail(), array(
                             'data' => $this->buildRfc822Message($message),
                             'mimeType' => 'message/rfc822',
@@ -199,7 +211,16 @@ class QueueProcessor
                     }
 
                     break;
+                } else {
+                    $this->logger->info(
+                        'Skipping message since it\'s too big',
+                        array(
+                            'groupEmail' => $copy->getGroupEmail(),
+                            'messageId' => $message->id
+                        )
+                    );
                 }
+                break;
 
             default:
                 $this->logger->error($e);
