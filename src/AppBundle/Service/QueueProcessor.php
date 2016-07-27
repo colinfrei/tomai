@@ -108,10 +108,23 @@ class QueueProcessor
                 continue;
             }
 
-            $thread = $gmail->users_threads->get(
-                $message->getGoogleEmail(),
-                $actualMessage->getThreadId()
-            );
+            try {
+                $thread = $gmail->users_threads->get(
+                    $message->getGoogleEmail(),
+                    $actualMessage->getThreadId()
+                );
+            } catch (\Google_Service_Exception $e) {
+                $this->logger->error(
+                    'Received an error from Google when trying to fetch an email thread',
+                    array(
+                        'user' => $message->getGoogleEmail(),
+                        'threadId' => $actualMessage->getThreadId(),
+                        'error' => $e->getMessage()
+                    )
+                );
+                
+                continue;
+            }
 
             $labels = [];
             /** @var \Google_Service_Gmail_Message $siblingMessage */
