@@ -111,7 +111,8 @@ class QueueProcessor
             try {
                 $thread = $gmail->users_threads->get(
                     $message->getGoogleEmail(),
-                    $actualMessage->getThreadId()
+                    $actualMessage->getThreadId(),
+                    array('format' => 'minimal')
                 );
             } catch (\Google_Service_Exception $e) {
                 $this->logger->error(
